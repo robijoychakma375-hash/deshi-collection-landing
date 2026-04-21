@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Hind Siliguri", ui-sans-serif, system-ui, sans-serif;
+  --font-bengali: "Hind Siliguri", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-800 antialiased font-sans overflow-x-hidden;
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .colorful-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdf4 100%);
+    background-size: 200% 200%;
+  }
+
+  .video-card {
+    @apply relative bg-white border border-slate-100 rounded-3xl overflow-hidden transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-1.5 cursor-pointer;
+  }
+
+  .video-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    @apply border-2 border-transparent rounded-3xl pointer-events-none transition-all duration-300;
+  }
+
+  .video-card:hover::after {
+    @apply border-teal-400/30;
+  }
+
+  .logo-text {
+    @apply bg-gradient-to-r from-blue-600 via-teal-500 to-orange-400 bg-clip-text text-transparent font-bengali font-bold;
+  }
+
+  .category-btn {
+    @apply px-5 py-2 rounded-xl text-sm font-bold transition-all duration-200 font-bengali;
+  }
+
+  .category-btn-active {
+    @apply bg-teal-600 text-white shadow-lg shadow-teal-200 transform scale-105;
+  }
+
+  .category-btn-inactive {
+    @apply bg-white border border-slate-200 text-slate-600 hover:border-teal-400 hover:text-teal-600;
+  }
+
+  .video-badge {
+    @apply absolute top-3 left-3 z-10 font-bengali text-[10px] font-bold px-2.5 py-0.5 rounded-lg bg-teal-600/90 text-white shadow-md backdrop-blur-sm;
+  }
+
+  /* News Ticker */
+  .ticker-container {
+    @apply flex items-center bg-white border border-slate-200 rounded-xl overflow-hidden h-10 shadow-sm mb-6 md:mb-10;
+  }
+
+  .ticker-label {
+    @apply h-full flex items-center px-4 bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bengali text-xs md:text-sm font-bold z-10 whitespace-nowrap;
+  }
+
+  .ticker-content {
+    @apply flex-1 overflow-hidden relative h-full flex items-center;
+  }
+
+  .ticker-text {
+    @apply absolute whitespace-nowrap font-bengali text-xs md:text-sm font-semibold text-slate-600;
+    animation: marquee 20s linear infinite;
+    padding-left: 100%;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+}
