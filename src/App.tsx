@@ -277,6 +277,31 @@ export default function App() {
           </AnimatePresence>
         </div>
 
+        {/* Upcoming Videos Section */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="mt-12 p-6 md:p-8 bg-gradient-to-br from-slate-50 to-blue-50 border border-blue-100/50 rounded-[2rem] shadow-sm relative overflow-hidden group"
+        >
+          <div className="absolute top-0 right-0 p-4 opacity-10 blur-sm group-hover:opacity-20 transition-opacity">
+            <span className="text-6xl md:text-8xl">🎬</span>
+          </div>
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-5 text-center md:text-left">
+            <div className="h-14 w-14 md:h-16 md:w-16 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-sm border border-blue-100">
+              🔥
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-bengali text-xl md:text-2xl font-bold text-slate-800 flex items-center justify-center md:justify-start gap-2">
+                নতুন ভিডিও আসছে
+              </h3>
+              <p className="font-bengali text-sm md:text-base text-slate-600 leading-relaxed max-w-2xl">
+                আরও নতুন ভিডিও খুব শিগগিরই আপলোড করা হবে। আপডেট পেতে আমাদের <span className="text-blue-600 font-bold">Telegram Channel</span>-এ Join করুন।
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Telegram Join Bottom Banner */}
         <motion.a
           id="telegram-bottom-join"
