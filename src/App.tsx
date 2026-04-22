@@ -278,29 +278,85 @@ export default function App() {
         </div>
 
         {/* Upcoming Videos Section */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="mt-12 p-6 md:p-8 bg-gradient-to-br from-slate-50 to-blue-50 border border-blue-100/50 rounded-[2rem] shadow-sm relative overflow-hidden group"
-        >
-          <div className="absolute top-0 right-0 p-4 opacity-10 blur-sm group-hover:opacity-20 transition-opacity">
-            <span className="text-6xl md:text-8xl">🎬</span>
-          </div>
-          <div className="relative z-10 flex flex-col md:flex-row items-center gap-5 text-center md:text-left">
-            <div className="h-14 w-14 md:h-16 md:w-16 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-sm border border-blue-100">
-              🔥
+        <div className="mt-16 mb-8">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="p-6 md:p-8 bg-gradient-to-br from-slate-50 to-blue-50 border border-blue-100/50 rounded-[2rem] shadow-sm relative overflow-hidden group mb-8"
+          >
+            <div className="absolute top-0 right-0 p-4 opacity-10 blur-sm group-hover:opacity-20 transition-opacity">
+              <span className="text-6xl md:text-8xl">🎬</span>
             </div>
-            <div className="space-y-2">
-              <h3 className="font-bengali text-xl md:text-2xl font-bold text-slate-800 flex items-center justify-center md:justify-start gap-2">
-                নতুন ভিডিও আসছে
-              </h3>
-              <p className="font-bengali text-sm md:text-base text-slate-600 leading-relaxed max-w-2xl">
-                আরও নতুন ভিডিও খুব শিগগিরই আপলোড করা হবে। আপডেট পেতে আমাদের <span className="text-blue-600 font-bold">Telegram Channel</span>-এ Join করুন।
-              </p>
+            <div className="relative z-10 flex flex-col md:flex-row items-center gap-5 text-center md:text-left">
+              <div className="h-14 w-14 md:h-16 md:w-16 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-sm border border-blue-100">
+                🔥
+              </div>
+              <div className="space-y-2">
+                <h3 className="font-bengali text-xl md:text-2xl font-bold text-slate-800 flex items-center justify-center md:justify-start gap-2">
+                  নতুন ভিডিও আসছে
+                </h3>
+                <p className="font-bengali text-sm md:text-base text-slate-600 leading-relaxed max-w-2xl">
+                  আরও নতুন ভিডিও খুব শিগগিরই আপলোড করা হবে। আপডেট পেতে আমাদের <span className="text-blue-600 font-bold">Telegram Channel</span>-এ Join করুন।
+                </p>
+              </div>
             </div>
+          </motion.div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {[
+              {
+                caption: "শিগগিরই আসছে নতুন আলোচিত ভিডিও",
+                image: "https://i.postimg.cc/vmCZ33rt/photo-2025-05-31-10-34-32.jpg"
+              },
+              {
+                caption: "নতুন চাঞ্চল্যকর ভিডিও আপডেট আসছে",
+                image: "https://i.postimg.cc/d0gV442X/photo-2025-07-19-15-21-23-(2).jpg"
+              },
+              {
+                caption: "আরও একটি বিশেষ ভিডিও খুব শিগগিরই",
+                image: "https://i.postimg.cc/vHGHq1nF/photo-2025-07-19-15-21-23.jpg"
+              },
+              {
+                caption: "নতুন ভাইরাল আপডেট দেখতে অপেক্ষা করুন",
+                image: "https://i.postimg.cc/q76khyPB/photo-2026-04-12-06-42-22.jpg"
+              }
+            ].map((item, index) => (
+              <motion.a
+                key={index}
+                href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32"
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="group relative bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition-all h-full"
+              >
+                <div className="relative aspect-video overflow-hidden">
+                  <img
+                    src={item.image}
+                    alt={item.caption}
+                    className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-110"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="absolute top-2 right-2 z-20">
+                    <span className="px-2 py-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] md:text-xs font-bold font-bengali rounded-lg shadow-sm">
+                      আসছে
+                    </span>
+                  </div>
+                  <div className="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-colors duration-500" />
+                </div>
+                <div className="p-3 bg-white">
+                  <h4 className="font-bengali text-[11px] md:text-sm font-bold text-slate-700 line-clamp-2 leading-relaxed">
+                    {item.caption}
+                  </h4>
+                </div>
+              </motion.a>
+            ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Telegram Join Bottom Banner */}
         <motion.a
