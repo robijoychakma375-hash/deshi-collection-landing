@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, Video, Sparkles, X, ChevronUp } from "lucide-react";
+import { Search, Video, Sparkles, X, ChevronUp, Share2, Check } from "lucide-react";
 
 // --- Video Data ---
 interface MediaItem {
@@ -10,6 +10,7 @@ interface MediaItem {
   link: string; // User prefers 'link'
   category: "new" | "popular" | "special";
   status?: "নতুন" | "Hot" | "Trending" | "Popular";
+  timeLabel?: string;
 }
 
 const mediaItems: MediaItem[] = [
@@ -19,7 +20,8 @@ const mediaItems: MediaItem[] = [
     image: "https://i.postimg.cc/QNwWZnxp/photo-2026-03-18-17-40-02(1).jpg",
     link: "https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32",
     category: "new",
-    status: "Trending"
+    status: "Trending",
+    timeLabel: "১ ঘণ্টা আগে"
   },
   {
     id: "2",
@@ -42,7 +44,8 @@ const mediaItems: MediaItem[] = [
     image: "https://i.postimg.cc/BZTjL5TP/photo-2026-04-21-13-13-58.jpg",
     link: "https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32",
     category: "new",
-    status: "নতুন"
+    status: "নতুন",
+    timeLabel: "আজ আপডেট"
   },
   {
     id: "5",
@@ -65,7 +68,8 @@ const mediaItems: MediaItem[] = [
     caption: "সবার সামনে ধরা পড়লো সত্য ঘটনা",
     image: "https://i.postimg.cc/vBdQbjSv/photo-2026-04-21-13-17-10.jpg",
     link: "https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32",
-    category: "new"
+    category: "new",
+    timeLabel: "নতুন আপলোড"
   },
   {
     id: "8",
@@ -137,6 +141,12 @@ const VideoCard = ({ item, index }: { item: MediaItem; index: number; key?: any 
             {item.status}
           </div>
         )}
+
+        {item.timeLabel && (
+          <div className="absolute bottom-3 left-3 z-10 font-bengali text-[8px] md:text-[9px] font-bold px-2 py-0.5 bg-white/90 text-teal-700 rounded-md shadow-sm backdrop-blur-sm border border-teal-100">
+            {item.timeLabel}
+          </div>
+        )}
       </div>
 
       <div className="p-3 md:p-5">
@@ -176,6 +186,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isShareCopied, setIsShareCopied] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -188,6 +199,30 @@ export default function App() {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: "দেশি কালেকশন",
+      text: "নতুন ভিডিও দেখতে নিচের ভিডিওতে ক্লিক করুন",
+      url: "https://deshicollection.qzz.io/"
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error("Error sharing:", err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareData.url);
+        setIsShareCopied(true);
+        setTimeout(() => setIsShareCopied(false), 2000);
+      } catch (err) {
+        console.error("Error copying to clipboard:", err);
+      }
+    }
   };
 
   useEffect(() => {
@@ -227,6 +262,9 @@ export default function App() {
               <h1 className="logo-text text-xl md:text-4xl lg:text-5xl tracking-tight leading-tight">
                 দেশি কালেকশন
               </h1>
+              <p className="font-bengali text-[10px] md:text-sm font-bold text-teal-600 mt-0.5 uppercase tracking-wide">
+                প্রতিদিন নতুন ভিডিও আপডেট
+              </p>
             </div>
             <p className="font-bengali text-[10px] md:text-sm font-semibold text-slate-500">
               নতুন ভিডিও দেখতে নিচের ভিডিওতে ক্লিক করুন
@@ -249,7 +287,7 @@ export default function App() {
         {/* Search & Filters */}
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4 md:gap-8 mb-8 md:mb-12">
           {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-2">
+          <div className="sticky top-[61px] lg:relative lg:top-0 z-40 w-screen lg:w-auto py-3 lg:py-0 bg-white/95 lg:bg-transparent backdrop-blur-lg lg:backdrop-blur-none border-b lg:border-none border-slate-200/50 flex flex-wrap justify-center gap-2 -mx-3 px-3 shadow-sm lg:shadow-none mb-2 lg:mb-0">
             {[
               { id: "all", label: "সব ভিডিও" },
               { id: "new", label: "নতুন" },
@@ -260,7 +298,7 @@ export default function App() {
                 id={`filter-${cat.id}`}
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id === "বিশেষ" ? "special" : cat.id as any)}
-                className={`category-btn ${
+                className={`category-btn whitespace-nowrap ${
                   (activeCategory === cat.id || (activeCategory === "special" && cat.id === "বিশেষ")) ? "category-btn-active" : "category-btn-inactive"
                 }`}
               >
@@ -270,23 +308,28 @@ export default function App() {
           </div>
 
           {/* Search Box */}
-          <div className="relative w-full max-w-xs md:max-w-sm">
-            <input
-              type="text"
-              placeholder="ভিডিও খুঁজুন..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 md:py-2.5 bg-white border border-slate-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all font-bengali text-xs md:text-sm text-slate-700"
-            />
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 md:h-4 md:w-4 text-slate-400" />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-teal-600"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
+          <div className="flex flex-col gap-1.5 w-full max-w-xs md:max-w-sm">
+            <p className="font-bengali text-[10px] md:text-xs text-slate-400 font-medium px-1 text-center lg:text-left">
+              যে ভিডিও খুঁজছেন, search box-এ লিখে দেখুন
+            </p>
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="ভিডিও খুঁজুন..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 md:py-2.5 bg-white border border-slate-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all font-bengali text-xs md:text-sm text-slate-700"
+              />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 md:h-4 md:w-4 text-slate-400" />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-teal-600"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -508,35 +551,67 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-20 py-8 border-t border-slate-200 bg-white/50 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-6 text-center space-y-3">
-          <p className="font-bengali text-sm md:text-base font-bold text-slate-700">
-            © দেশি কালেকশন
-          </p>
-          <p className="font-bengali text-[10px] md:text-xs text-slate-400 font-medium">
-            ভিডিও দেখতে বিজ্ঞাপন আসতে পারে
-          </p>
-          <p className="font-sans text-[8px] md:text-[10px] text-slate-300 uppercase tracking-widest pt-4">
-            All Rights Reserved 2026
-          </p>
+      <footer className="mt-20 py-10 border-t border-slate-200 bg-white/50 backdrop-blur-sm">
+        <div className="mx-auto max-w-7xl px-6 text-center space-y-6">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 font-bengali text-[10px] md:text-[13px] font-bold text-slate-500">
+            <a href="#" className="hover:text-teal-600 transition-colors">হোম</a>
+            <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="hover:text-teal-600 transition-colors">টেলিগ্রাম</a>
+            <a href="#" className="hover:text-teal-600 transition-colors">ডিসক্লেইমার</a>
+            <a href="#" className="hover:text-teal-600 transition-colors">যোগাযোগ / রিপোর্ট</a>
+          </div>
+          
+          <div className="space-y-3">
+            <p className="font-bengali text-sm md:text-base font-bold text-slate-700">
+              © দেশি কালেকশন
+            </p>
+            <p className="font-bengali text-[10px] md:text-xs text-slate-400 font-medium">
+              ভিডিও দেখতে বিজ্ঞাপন আসতে পারে
+            </p>
+            <p className="font-sans text-[8px] md:text-[10px] text-slate-300 uppercase tracking-widest pt-2">
+              All Rights Reserved 2026
+            </p>
+          </div>
         </div>
       </footer>
 
-      {/* Back to Top Button */}
-      <AnimatePresence>
-        {showScrollTop && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.5, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.5, y: 20 }}
-            onClick={scrollToTop}
-            className="fixed bottom-6 right-6 z-[60] h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 rounded-full shadow-lg flex items-center justify-center text-teal-600 hover:text-white hover:bg-teal-500 transition-all group"
-            title="উপরে যান"
-          >
-            <ChevronUp className="h-5 w-5 md:h-6 md:w-6 group-hover:-translate-y-1 transition-transform" />
-          </motion.button>
-        )}
-      </AnimatePresence>
+      {/* Floating Buttons Container */}
+      <div className="fixed bottom-6 right-6 z-[60] flex flex-col gap-3">
+        {/* Share Button */}
+        <motion.button
+          initial={{ opacity: 0, scale: 0.5, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          onClick={handleShare}
+          className="h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 rounded-full shadow-lg flex items-center justify-center text-teal-600 hover:text-white hover:bg-teal-500 transition-all group relative"
+          title="শেয়ার করুন"
+        >
+          {isShareCopied ? (
+            <Check className="h-5 w-5 md:h-6 md:w-6" />
+          ) : (
+            <Share2 className="h-5 w-5 md:h-6 md:w-6 group-hover:rotate-12 transition-transform" />
+          )}
+          {isShareCopied && (
+            <div className="absolute -top-10 right-0 px-3 py-1 bg-slate-800 text-white text-[10px] rounded-lg whitespace-nowrap">
+              লিঙ্ক কপি করা হয়েছে
+            </div>
+          )}
+        </motion.button>
+
+        {/* Back to Top Button */}
+        <AnimatePresence>
+          {showScrollTop && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.5, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.5, y: 20 }}
+              onClick={scrollToTop}
+              className="h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 rounded-full shadow-lg flex items-center justify-center text-teal-600 hover:text-white hover:bg-teal-500 transition-all group"
+              title="উপরে যান"
+            >
+              <ChevronUp className="h-5 w-5 md:h-6 md:w-6 group-hover:-translate-y-1 transition-transform" />
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
