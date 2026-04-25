@@ -101,10 +101,10 @@ const VideoCard = ({ item, index }: { item: MediaItem; index: number; key?: any 
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'Hot': return 'bg-orange-500 text-white';
-      case 'Trending': return 'bg-blue-500 text-white';
-      case 'Popular': return 'bg-teal-500 text-white';
-      case 'নতুন': return 'bg-slate-800 text-white';
-      default: return 'bg-teal-600 text-white';
+      case 'Trending': return 'bg-blue-600 text-white';
+      case 'Popular': return 'bg-blue-400 text-white';
+      case 'নতুন': return 'bg-slate-900 text-white';
+      default: return 'bg-blue-600 text-white';
     }
   };
 
@@ -129,7 +129,7 @@ const VideoCard = ({ item, index }: { item: MediaItem; index: number; key?: any 
           loading="lazy"
           decoding="async"
           referrerPolicy="no-referrer"
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           onError={(e) => {
             (e.target as HTMLImageElement).src = "https://picsum.photos/seed/fallback/800/450";
           }}
@@ -137,25 +137,25 @@ const VideoCard = ({ item, index }: { item: MediaItem; index: number; key?: any 
         <div className="video-badge">ভিডিও</div>
         
         {item.status && (
-          <div className={`absolute top-3 right-3 z-10 font-bengali text-[9px] md:text-[10px] font-bold px-2 py-0.5 rounded-lg shadow-md backdrop-blur-sm ${getStatusStyle(item.status)}`}>
+          <div className={`absolute top-3 right-3 z-10 font-bengali text-[9px] md:text-[10px] font-bold px-2 py-1 rounded-lg shadow-lg backdrop-blur-sm ${getStatusStyle(item.status)}`}>
             {item.status}
           </div>
         )}
 
         {item.timeLabel && (
-          <div className="absolute bottom-3 left-3 z-10 font-bengali text-[8px] md:text-[9px] font-bold px-2 py-0.5 bg-white/90 text-teal-700 rounded-md shadow-sm backdrop-blur-sm border border-teal-100">
+          <div className="absolute bottom-3 left-3 z-10 font-bengali text-[8px] md:text-[9px] font-bold px-2 py-1 bg-white/95 text-blue-700 rounded-lg shadow-sm backdrop-blur-sm border border-blue-100">
             {item.timeLabel}
           </div>
         )}
       </div>
 
-      <div className="p-3 md:p-5">
-        <h3 className="font-bengali text-xs md:text-base lg:text-lg font-bold leading-tight line-clamp-2 text-slate-800 transition-colors group-hover:text-teal-600">
+      <div className="p-4 md:p-5">
+        <h3 className="font-bengali text-xs md:text-base lg:text-lg font-bold leading-tight line-clamp-2 text-slate-800 transition-colors group-hover:text-blue-600">
           {item.caption}
         </h3>
         
-        <div className="mt-2 md:mt-4 flex items-center justify-between">
-          <span className="text-[8px] md:text-[11px] font-bold text-teal-600/80 bg-teal-50 px-2 md:px-3 py-0.5 md:py-1 rounded-lg uppercase tracking-wider font-bengali">
+        <div className="mt-3 md:mt-4 flex items-center justify-between">
+          <span className="text-[8px] md:text-[11px] font-bold text-blue-600/80 bg-blue-50/50 px-2 md:px-3 py-1 rounded-lg uppercase tracking-wider font-bengali">
             {item.category === 'new' ? 'নতুন' : item.category === 'popular' ? 'জনপ্রিয়' : 'বিশেষ'}
           </span>
           <span className="flex items-center gap-1 text-[10px] md:text-[13px] font-bold text-orange-500 font-bengali">
@@ -239,36 +239,35 @@ export default function App() {
   }, [activeCategory, searchQuery]);
 
   return (
-    <div className="relative min-h-screen selection:bg-teal-100 selection:text-teal-700">
+    <div className="relative min-h-screen selection:bg-blue-100 selection:text-blue-800">
       <BubbleBackground />
       
       {/* Header section */}
-      <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-slate-200/50 px-4 md:px-6 py-2.5 md:py-5 transition-all duration-300 shadow-sm">
+      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-xl border-b border-slate-200/60 px-4 md:px-6 py-3 md:py-4 transition-all duration-300 shadow-sm">
         <div className="mx-auto max-w-7xl flex flex-col items-center text-center">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center gap-3"
+            className="flex flex-col items-center gap-2"
           >
             <div className="flex items-center gap-3 md:gap-4">
               <img 
                 src="https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg" 
                 alt="দেশি কালেকশন logo" 
-                className="h-9 w-9 md:h-12 md:w-12 lg:h-14 lg:w-14 rounded-xl object-cover shadow-sm border border-slate-100"
+                className="h-10 w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 rounded-2xl object-cover shadow-sm border border-slate-100"
                 loading="eager"
                 decoding="async"
                 referrerPolicy="no-referrer"
               />
-              <h1 className="logo-text text-xl md:text-4xl lg:text-5xl tracking-tight leading-tight">
-                দেশি কালেকশন
-              </h1>
-              <p className="font-bengali text-[10px] md:text-sm font-bold text-teal-600 mt-0.5 uppercase tracking-wide">
-                প্রতিদিন নতুন ভিডিও আপডেট
-              </p>
+              <div className="flex flex-col items-start">
+                <h1 className="logo-text text-2xl md:text-3xl lg:text-4xl tracking-tight leading-none">
+                  দেশি কালেকশন
+                </h1>
+                <p className="font-bengali text-[10px] md:text-xs font-black text-[#5B6B7A] mt-1 uppercase tracking-widest">
+                  প্রতিদিন নতুন ভিডিও আপডেট
+                </p>
+              </div>
             </div>
-            <p className="font-bengali text-[10px] md:text-sm font-semibold text-slate-500">
-              নতুন ভিডিও দেখতে নিচের ভিডিওতে ক্লিক করুন
-            </p>
           </motion.div>
         </div>
       </header>
@@ -318,7 +317,7 @@ export default function App() {
                 placeholder="ভিডিও খুঁজুন..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 md:py-2.5 bg-white border border-slate-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all font-bengali text-xs md:text-sm text-slate-700"
+                className="w-full pl-10 pr-4 py-2 md:py-2.5 bg-white border border-slate-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-bengali text-xs md:text-sm text-slate-700"
               />
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 md:h-4 md:w-4 text-slate-400" />
               {searchQuery && (
@@ -359,7 +358,7 @@ export default function App() {
                 </p>
                 <button 
                   onClick={() => { setSearchQuery(""); setActiveCategory("all"); }}
-                  className="mt-8 px-6 py-2.5 bg-teal-500 text-white font-bengali text-sm font-bold rounded-xl shadow-lg shadow-teal-100 hover:bg-teal-600 transition-all"
+                  className="mt-8 px-6 py-2.5 bg-blue-600 text-white font-bengali text-sm font-bold rounded-xl shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all"
                 >
                   সব ভিডিও দেখুন
                 </button>
@@ -553,22 +552,19 @@ export default function App() {
       {/* Footer */}
       <footer className="mt-20 py-10 border-t border-slate-200 bg-white/50 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-6 text-center space-y-6">
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 font-bengali text-[10px] md:text-[13px] font-bold text-slate-500">
-            <a href="#" className="hover:text-teal-600 transition-colors">হোম</a>
-            <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="hover:text-teal-600 transition-colors">টেলিগ্রাম</a>
-            <a href="#" className="hover:text-teal-600 transition-colors">ডিসক্লেইমার</a>
-            <a href="#" className="hover:text-teal-600 transition-colors">যোগাযোগ / রিপোর্ট</a>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 font-bengali text-[12px] md:text-[14px] font-bold text-[#5B6B7A]">
+            <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="hover:text-[#2563EB] transition-colors uppercase tracking-wider">হোম</a>
+            <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="hover:text-[#2563EB] transition-colors uppercase tracking-wider">টেলিগ্রাম</a>
+            <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="hover:text-[#2563EB] transition-colors uppercase tracking-wider">ডিসক্লেইমার</a>
+            <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="hover:text-[#2563EB] transition-colors uppercase tracking-wider">যোগাযোগ</a>
           </div>
           
-          <div className="space-y-3">
-            <p className="font-bengali text-sm md:text-base font-bold text-slate-700">
-              © দেশি কালেকশন
+          <div className="space-y-2">
+            <p className="font-bengali text-sm md:text-lg font-black text-[#1E3A5F] tracking-tight">
+              © দেশি কালেকশন ২০২৬
             </p>
-            <p className="font-bengali text-[10px] md:text-xs text-slate-400 font-medium">
-              ভিডিও দেখতে বিজ্ঞাপন আসতে পারে
-            </p>
-            <p className="font-sans text-[8px] md:text-[10px] text-slate-300 uppercase tracking-widest pt-2">
-              All Rights Reserved 2026
+            <p className="font-bengali text-[10px] md:text-[12px] text-[#7A8797] font-medium">
+              ভিডিও দেখতে বিজ্ঞাপন আসতে পারে, এটি সাইটটি সচল রাখতে সহায়তা করে
             </p>
           </div>
         </div>
@@ -581,7 +577,7 @@ export default function App() {
           initial={{ opacity: 0, scale: 0.5, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           onClick={handleShare}
-          className="h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 rounded-full shadow-lg flex items-center justify-center text-teal-600 hover:text-white hover:bg-teal-500 transition-all group relative"
+          className="h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 rounded-full shadow-lg flex items-center justify-center text-blue-600 hover:text-white hover:bg-blue-600 transition-all group relative"
           title="শেয়ার করুন"
         >
           {isShareCopied ? (
@@ -590,7 +586,7 @@ export default function App() {
             <Share2 className="h-5 w-5 md:h-6 md:w-6 group-hover:rotate-12 transition-transform" />
           )}
           {isShareCopied && (
-            <div className="absolute -top-10 right-0 px-3 py-1 bg-slate-800 text-white text-[10px] rounded-lg whitespace-nowrap">
+            <div className="absolute -top-10 right-0 px-3 py-1 bg-slate-900 text-white text-[10px] rounded-lg whitespace-nowrap shadow-xl">
               লিঙ্ক কপি করা হয়েছে
             </div>
           )}
@@ -604,7 +600,7 @@ export default function App() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.5, y: 20 }}
               onClick={scrollToTop}
-              className="h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 rounded-full shadow-lg flex items-center justify-center text-teal-600 hover:text-white hover:bg-teal-500 transition-all group"
+              className="h-10 w-10 md:h-12 md:w-12 bg-white border border-slate-200 rounded-full shadow-lg flex items-center justify-center text-blue-600 hover:text-white hover:bg-blue-600 transition-all group"
               title="উপরে যান"
             >
               <ChevronUp className="h-5 w-5 md:h-6 md:w-6 group-hover:-translate-y-1 transition-transform" />
