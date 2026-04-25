@@ -556,7 +556,6 @@ export default function App() {
             <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="hover:text-[#2563EB] transition-colors uppercase tracking-wider">হোম</a>
             <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="hover:text-[#2563EB] transition-colors uppercase tracking-wider">টেলিগ্রাম</a>
             <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="hover:text-[#2563EB] transition-colors uppercase tracking-wider">ডিসক্লেইমার</a>
-            <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="hover:text-[#2563EB] transition-colors uppercase tracking-wider">যোগাযোগ</a>
           </div>
           
           <div className="space-y-2">
