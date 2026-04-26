@@ -184,6 +184,35 @@ const SkeletonCard = () => (
   </div>
 );
 
+const AdsterraNativeBanner = () => {
+  useEffect(() => {
+    // Prevent duplicate script insertion
+    const scriptId = "adsterra-native-script";
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement("script");
+      script.id = scriptId;
+      script.src = "https://liverdopost.com/e17fb030f8c9a301b2c73825ace55c8c/invoke.js";
+      script.async = true;
+      script.setAttribute("data-cfasync", "false");
+      document.body.appendChild(script);
+    }
+  }, []);
+
+  return (
+    <div className="my-12 w-full max-w-7xl mx-auto px-2 overflow-hidden">
+      <div className="flex flex-col items-center">
+        <p className="font-bengali text-[10px] md:text-xs text-slate-500 font-medium mb-3 uppercase tracking-widest opacity-60">
+          Advertisement
+        </p>
+        <div 
+          id="container-e17fb030f8c9a301b2c73825ace55c8c" 
+          className="w-full min-h-[100px] bg-[#111118]/30 rounded-2xl border border-white/5"
+        />
+      </div>
+    </div>
+  );
+};
+
 export default function App() {
   const [activeCategory, setActiveCategory] = useState<"all" | "new" | "popular" | "special">("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -371,6 +400,9 @@ export default function App() {
             )}
           </AnimatePresence>
         </div>
+
+        {/* Adsterra Native Banner */}
+        <AdsterraNativeBanner />
 
         {/* Upcoming Videos Section */}
         <div className="mt-16 mb-8">
