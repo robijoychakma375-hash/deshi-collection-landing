@@ -130,7 +130,7 @@ const VideoCard = ({ item, index, priority = false }: { item: MediaItem; index: 
           src={item.image}
           alt={item.caption}
           loading={priority ? "eager" : "lazy"}
-          fetchpriority={priority ? "high" : "auto"}
+          fetchPriority={priority ? "high" : "auto"}
           decoding="async"
           referrerPolicy="no-referrer"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -305,7 +305,7 @@ export default function App() {
                 alt="দেশি কালেকশন logo" 
                 className="h-10 w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 rounded-2xl object-cover shadow-[0_0_15px_rgba(124,58,237,0.3)] border border-white/10"
                 loading="eager"
-                fetchpriority="high"
+                fetchPriority="high"
                 decoding="async"
                 referrerPolicy="no-referrer"
               />
@@ -420,10 +420,12 @@ export default function App() {
         </div>
 
         {/* Adsterra Native Banner */}
-        <AdsterraNativeBanner />
+        <div style={{ contentVisibility: 'auto', containIntrinsicSize: '0 250px' }}>
+          <AdsterraNativeBanner />
+        </div>
 
         {/* Upcoming Videos Section */}
-        <div className="mt-16 mb-8">
+        <div className="mt-16 mb-8" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 400px' }}>
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -504,7 +506,7 @@ export default function App() {
         </div>
 
         {/* Most Watched Section */}
-        <div className="mt-16">
+        <div className="mt-16" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 500px' }}>
           <div className="flex items-center gap-3 mb-6 px-2">
             <div className="h-10 w-10 bg-purple-900/30 rounded-xl flex items-center justify-center text-xl shadow-inner border border-purple-500/20">
               🔥
