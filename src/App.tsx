@@ -259,8 +259,8 @@ export default function App() {
 
   const handleShare = async () => {
     const shareData = {
-      title: "দেশি কালেকশন",
-      text: "নতুন ভিডিও দেখতে নিচের ভিডিওতে ক্লিক করুন",
+      title: "Desi Collection",
+      text: "Curated photo and video updates",
       url: "https://deshicollection.qzz.io/"
     };
 
