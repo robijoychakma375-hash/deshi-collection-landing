@@ -11,7 +11,17 @@
     
     <!-- Preloads for LCP -->
     <link rel="preload" as="image" href="https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg" fetchpriority="high" />
-    <link rel="preload" as="image" href="https://i.postimg.cc/QNwWZnxp/photo-2026-03-18-17-40-02(1).jpg" fetchpriority="high" />
+    
+    <style>
+      body { background: #050505; color: #fff; margin: 0; font-family: sans-serif; }
+      #root:empty::before {
+        content: "";
+        display: block;
+        height: 70px;
+        background: rgba(17, 17, 24, 0.8);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+    </style>
 
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg" />

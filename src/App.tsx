@@ -94,9 +94,8 @@ const mediaItems: MediaItem[] = [
 const BubbleBackground = () => (
   <>
     <div className="colorful-bg" />
-    <div className="glow-blob top-[-10%] left-[-10%] bg-purple-600/30" />
-    <div className="glow-blob bottom-[-10%] right-[-10%] bg-blue-600/30" />
-    <div className="glow-blob top-[20%] right-[10%] bg-purple-500/20 w-[300px] h-[300px]" />
+    <div className="glow-blob top-[-10%] left-[-10%] bg-purple-600/10" />
+    <div className="glow-blob bottom-[-10%] right-[-10%] bg-blue-600/10" />
   </>
 );
 
@@ -209,7 +208,7 @@ const AdsterraNativeBanner = () => {
         script.async = true;
         document.body.appendChild(script);
       }
-    }, 2500); // 2.5 second delay
+    }, 3500); // Increased delay to 3.5 seconds
 
     return () => clearTimeout(timer);
   }, []);
@@ -249,6 +248,14 @@ export default function App() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const [renderBelowFold, setRenderBelowFold] = useState(false);
+
+  useEffect(() => {
+    // Defere heavy section rendering
+    const timer = setTimeout(() => setRenderBelowFold(true), 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleShare = async () => {
     const shareData = {
@@ -391,7 +398,7 @@ export default function App() {
               Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
             ) : filteredMedia.length > 0 ? (
               filteredMedia.map((item, index) => (
-                <VideoCard key={item.id} item={item} index={index} priority={index < 4} />
+                <VideoCard key={item.id} item={item} index={index} priority={index < 2} />
               ))
             ) : (
               <motion.div
@@ -420,13 +427,16 @@ export default function App() {
         </div>
 
         {/* Adsterra Native Banner */}
-        <div style={{ contentVisibility: 'auto', containIntrinsicSize: '0 250px' }}>
-          <AdsterraNativeBanner />
-        </div>
+        {renderBelowFold && (
+          <div style={{ contentVisibility: 'auto', containIntrinsicSize: '0 250px' }}>
+            <AdsterraNativeBanner />
+          </div>
+        )}
 
         {/* Upcoming Videos Section */}
-        <div className="mt-16 mb-8" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 400px' }}>
-          <motion.div
+        {renderBelowFold && (
+          <div className="mt-16 mb-8" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 400px' }}>
+            <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -504,10 +514,12 @@ export default function App() {
             ))}
           </div>
         </div>
+      )}
 
         {/* Most Watched Section */}
-        <div className="mt-16" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 500px' }}>
-          <div className="flex items-center gap-3 mb-6 px-2">
+        {renderBelowFold && (
+          <div className="mt-16" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 500px' }}>
+            <div className="flex items-center gap-3 mb-6 px-2">
             <div className="h-10 w-10 bg-purple-900/30 rounded-xl flex items-center justify-center text-xl shadow-inner border border-purple-500/20">
               🔥
             </div>
@@ -574,10 +586,12 @@ export default function App() {
             ))}
           </div>
         </div>
+      )}
 
         {/* Telegram Join Bottom Banner */}
-        <motion.a
-          id="telegram-bottom-join"
+        {renderBelowFold && (
+          <motion.a
+            id="telegram-bottom-join"
           href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32"
           target="_blank"
           rel="noopener noreferrer"
@@ -604,10 +618,12 @@ export default function App() {
             </div>
           </div>
         </motion.a>
+        )}
       </main>
 
       {/* Footer */}
-      <footer className="mt-20 py-10 border-t border-white/5 bg-[#050505]/50 backdrop-blur-sm">
+      {renderBelowFold && (
+        <footer className="mt-20 py-10 border-t border-white/5 bg-[#050505]/50 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-6 text-center space-y-6">
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 font-bengali text-[12px] md:text-[14px] font-bold text-slate-400">
             <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="hover:text-purple-400 transition-colors uppercase tracking-widest text-[#cbd5e166]">হোম</a>
@@ -624,7 +640,8 @@ export default function App() {
             </p>
           </div>
         </div>
-      </footer>
+        </footer>
+      )}
 
       {/* Floating Buttons Container */}
       <div className="fixed bottom-6 right-6 z-[60] flex flex-col gap-3">
