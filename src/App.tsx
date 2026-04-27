@@ -74,7 +74,7 @@ const mediaItems: MediaItem[] = [
   {
     id: "8",
     caption: "যে ভিডিও নিয়ে চারদিকে আলোচনা",
-    image: "https://i.postimg.cc/tRkXGBdf/photo-2026-04-21-10-29-57.jpg",
+    image: "https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg",
     link: "https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32",
     category: "popular",
     status: "Hot"
@@ -537,7 +537,7 @@ export default function App() {
               },
               {
                 caption: "সবচেয়ে বেশিবার দেখা ভিডিও আপডেট",
-                image: "https://i.postimg.cc/tRkXGBdf/photo-2026-04-21-10-29-57.jpg",
+                image: "https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg",
                 views: "৯৫ হাজার"
               },
               {
