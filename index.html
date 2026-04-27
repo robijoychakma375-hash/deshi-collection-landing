@@ -13,14 +13,16 @@
     <link rel="preload" as="image" href="https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg" fetchpriority="high" />
     
     <style>
-      body { background: #050505; color: #fff; margin: 0; font-family: sans-serif; }
+      body { background: #050505; color: #fff; margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
       #root:empty::before {
         content: "";
         display: block;
         height: 70px;
-        background: rgba(17, 17, 24, 0.8);
+        background: rgba(17, 17, 24, 0.9);
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       }
+      header { height: 70px; }
+      .colorful-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.08) 0%, transparent 50%); pointer-events: none; }
     </style>
 
     <!-- Favicon -->

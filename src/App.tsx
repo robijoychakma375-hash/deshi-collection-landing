@@ -94,8 +94,8 @@ const mediaItems: MediaItem[] = [
 const BubbleBackground = () => (
   <>
     <div className="colorful-bg" />
-    <div className="glow-blob top-[-10%] left-[-10%] bg-purple-600/10" />
-    <div className="glow-blob bottom-[-10%] right-[-10%] bg-blue-600/10" />
+    <div className="glow-blob top-[-10%] left-[-10%] bg-purple-600/5" />
+    <div className="glow-blob bottom-[-10%] right-[-10%] bg-blue-600/5" />
   </>
 );
 
@@ -116,8 +116,8 @@ const VideoCard = ({ item, index, priority = false }: { item: MediaItem; index: 
       href={item.link}
       target="_blank"
       rel="noopener noreferrer"
-      layout
-      initial={priority ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.96, y: 10 }}
+      layout={!priority}
+      initial={priority ? { opacity: 1 } : { opacity: 0, scale: 0.96, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.9 }}
       transition={{ duration: 0.2, delay: priority ? 0 : index * 0.02 }}
@@ -253,7 +253,7 @@ export default function App() {
 
   useEffect(() => {
     // Defere heavy section rendering
-    const timer = setTimeout(() => setRenderBelowFold(true), 600);
+    const timer = setTimeout(() => setRenderBelowFold(true), 300);
     return () => clearTimeout(timer);
   }, []);
 
