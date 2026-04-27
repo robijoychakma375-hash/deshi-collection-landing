@@ -100,7 +100,7 @@ const BubbleBackground = () => (
   </>
 );
 
-const VideoCard = ({ item, index }: { item: MediaItem; index: number; key?: any }) => {
+const VideoCard = ({ item, index, priority = false }: { item: MediaItem; index: number; priority?: boolean; key?: any }) => {
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'Hot': return 'bg-orange-500 text-white border border-orange-400/30 shadow-[0_0_10px_rgba(249,115,22,0.3)]';
@@ -118,10 +118,10 @@ const VideoCard = ({ item, index }: { item: MediaItem; index: number; key?: any 
       target="_blank"
       rel="noopener noreferrer"
       layout
-      initial={{ opacity: 0, scale: 0.96, y: 10 }}
+      initial={priority ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.96, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.2, delay: index * 0.02 }}
+      transition={{ duration: 0.2, delay: priority ? 0 : index * 0.02 }}
       whileTap={{ scale: 0.98 }}
       className="video-card group block"
     >
@@ -129,7 +129,8 @@ const VideoCard = ({ item, index }: { item: MediaItem; index: number; key?: any 
         <img
           src={item.image}
           alt={item.caption}
-          loading="lazy"
+          loading={priority ? "eager" : "lazy"}
+          fetchpriority={priority ? "high" : "auto"}
           decoding="async"
           referrerPolicy="no-referrer"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -172,13 +173,14 @@ const VideoCard = ({ item, index }: { item: MediaItem; index: number; key?: any 
 };
 
 const SkeletonCard = () => (
-  <div className="video-card h-[180px] md:h-[300px] animate-pulse">
-    <div className="h-24 md:h-44 bg-[#1a1a25]" />
-    <div className="p-3 md:p-6 space-y-3">
-      <div className="h-3 w-3/4 bg-[#1a1a25] rounded" />
-      <div className="flex justify-between">
-        <div className="h-3 w-1/4 bg-[#1a1a25] rounded" />
-        <div className="h-3 w-1/4 bg-[#1a1a25] rounded" />
+  <div className="video-card overflow-hidden">
+    <div className="aspect-video bg-[#1a1a25] animate-pulse" />
+    <div className="p-4 md:p-5 space-y-3">
+      <div className="h-4 w-3/4 bg-[#1a1a25] rounded animate-pulse" />
+      <div className="h-3 w-1/2 bg-[#1a1a25] rounded animate-pulse" />
+      <div className="flex justify-between items-center pt-2">
+        <div className="h-6 w-16 bg-[#1a1a25] rounded-lg animate-pulse" />
+        <div className="h-4 w-20 bg-[#1a1a25] rounded animate-pulse" />
       </div>
     </div>
   </div>
@@ -186,16 +188,30 @@ const SkeletonCard = () => (
 
 const AdsterraNativeBanner = () => {
   useEffect(() => {
-    // Prevent duplicate script insertion
-    const scriptId = "adsterra-native-script";
-    if (!document.getElementById(scriptId)) {
-      const script = document.createElement("script");
-      script.id = scriptId;
-      script.src = "https://liverdopost.com/e17fb030f8c9a301b2c73825ace55c8c/invoke.js";
-      script.async = true;
-      script.setAttribute("data-cfasync", "false");
-      document.body.appendChild(script);
-    }
+    // Delay ad script loading to improve initial page load performance
+    const timer = setTimeout(() => {
+      const scriptId = "adsterra-native-script";
+      if (!document.getElementById(scriptId)) {
+        const script = document.createElement("script");
+        script.id = scriptId;
+        script.src = "https://liverdopost.com/e17fb030f8c9a301b2c73825ace55c8c/invoke.js";
+        script.async = true;
+        script.setAttribute("data-cfasync", "false");
+        document.body.appendChild(script);
+      }
+
+      // Load second ad script with even more delay
+      const secondScriptId = "adsterra-social-script";
+      if (!document.getElementById(secondScriptId)) {
+        const script = document.createElement("script");
+        script.id = secondScriptId;
+        script.src = "https://liverdopost.com/72/6e/52/726e52d420e290ebe1bb4759c4ef0714.js";
+        script.async = true;
+        document.body.appendChild(script);
+      }
+    }, 2500); // 2.5 second delay
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -206,7 +222,8 @@ const AdsterraNativeBanner = () => {
         </p>
         <div 
           id="container-e17fb030f8c9a301b2c73825ace55c8c" 
-          className="w-full min-h-[100px] bg-[#111118]/30 rounded-2xl border border-white/5"
+          className="w-full min-h-[250px] bg-[#111118]/30 rounded-2xl border border-white/5 shadow-inner"
+          style={{ contentVisibility: 'auto' }}
         />
       </div>
     </div>
@@ -288,6 +305,7 @@ export default function App() {
                 alt="দেশি কালেকশন logo" 
                 className="h-10 w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 rounded-2xl object-cover shadow-[0_0_15px_rgba(124,58,237,0.3)] border border-white/10"
                 loading="eager"
+                fetchpriority="high"
                 decoding="async"
                 referrerPolicy="no-referrer"
               />
@@ -373,7 +391,7 @@ export default function App() {
               Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
             ) : filteredMedia.length > 0 ? (
               filteredMedia.map((item, index) => (
-                <VideoCard key={item.id} item={item} index={index} />
+                <VideoCard key={item.id} item={item} index={index} priority={index < 4} />
               ))
             ) : (
               <motion.div

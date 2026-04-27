@@ -26,7 +26,8 @@
   }
 
   .glow-blob {
-    @apply absolute w-[500px] h-[500px] rounded-full blur-[120px] opacity-20 pointer-events-none;
+    @apply absolute w-[500px] h-[500px] rounded-full blur-[80px] opacity-15 pointer-events-none;
+    will-change: transform;
   }
 
   .video-card {
