@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, Video, Sparkles, X, ChevronUp, Share2, Check } from "lucide-react";
+import { Search, Video, Sparkles, X, ChevronUp, Share2, Check, Menu, Home, Clock, TrendingUp, Star, Phone, Info, Shield, HelpCircle } from "lucide-react";
 
 // --- Video Data ---
 interface MediaItem {
@@ -16,7 +16,7 @@ interface MediaItem {
 const mediaItems: MediaItem[] = [
   {
     id: "1",
-    caption: "ইউএনওর আলোচিত ভিডিও—শেষ পর্যন্ত যা জানা গেল",
+    caption: "ইউএনওর আলোচিত ঘটনা—পুরো ঘটনার বিস্তারিত আপডেট",
     image: "https://i.postimg.cc/QNwWZnxp/photo-2026-03-18-17-40-02(1).jpg",
     link: "https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32",
     category: "new",
@@ -25,7 +25,7 @@ const mediaItems: MediaItem[] = [
   },
   {
     id: "2",
-    caption: "প্রবাসী বউকে নিয়ে চাঞ্চল্যকর ঘটনা, ভিডিওটি ভাইরাল",
+    caption: "প্রবাসীদের জীবনে ঘটে যাওয়া কিছু বাস্তব ঘটনা যা ভাইরাল",
     image: "https://i.postimg.cc/HnD7GBQr/photo-2026-04-21-11-57-03.jpg",
     link: "https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32",
     category: "popular",
@@ -33,14 +33,14 @@ const mediaItems: MediaItem[] = [
   },
   {
     id: "3",
-    caption: "প্রতারণা করতে গিয়ে ধরা—পুরো ঘটনাটি দেখুন",
+    caption: "প্রতারণা চক্র থেকে বাঁচতে সচেতনতামূলক ভিডিও আপডেট",
     image: "https://i.postimg.cc/0yWM58pn/photo-2026-04-21-13-08-37.jpg",
     link: "https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32",
     category: "special"
   },
   {
     id: "4",
-    caption: "শিক্ষা প্রতিষ্ঠানের আলোচিত ঘটনা, সোশ্যাল মিডিয়ায় ঝড়",
+    caption: "শিক্ষা প্রতিষ্ঠান কেন্দ্রিক সমসাময়িক আলোচিত ভিডিও",
     image: "https://i.postimg.cc/BZTjL5TP/photo-2026-04-21-13-13-58.jpg",
     link: "https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32",
     category: "new",
@@ -49,7 +49,7 @@ const mediaItems: MediaItem[] = [
   },
   {
     id: "5",
-    caption: "আজকের সবচেয়ে আলোচিত ভিডিও আপডেট",
+    caption: "সোশ্যাল মিডিয়ায় আলোচিত আজকের সেরা আপডেটগুলো",
     image: "https://i.postimg.cc/RFr0qqN5/photo-2026-04-21-11-40-34.jpg",
     link: "https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32",
     category: "popular",
@@ -57,7 +57,7 @@ const mediaItems: MediaItem[] = [
   },
   {
     id: "6",
-    caption: "ঘটনার আসল কারণ জানতে ভিডিওটি দেখুন",
+    caption: "ঘটনার আড়ালের সত্য প্রকাশ—বিস্তারিত ভিডিওতে দেখুন",
     image: "https://i.postimg.cc/Kvc816vy/photo-2026-04-21-11-38-59.jpg",
     link: "https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32",
     category: "special",
@@ -65,7 +65,7 @@ const mediaItems: MediaItem[] = [
   },
   {
     id: "7",
-    caption: "সবার সামনে ধরা পড়লো সত্য ঘটনা",
+    caption: "জনপ্রিয় সত্য ঘটনা যা আপনাকে অবাক করে দেবে",
     image: "https://i.postimg.cc/vBdQbjSv/photo-2026-04-21-13-17-10.jpg",
     link: "https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32",
     category: "new",
@@ -73,7 +73,7 @@ const mediaItems: MediaItem[] = [
   },
   {
     id: "8",
-    caption: "যে ভিডিও নিয়ে চারদিকে আলোচনা",
+    caption: "বর্তমান সময়ে চারদিকে আলোচিত জনপ্রিয় সংবাদের ভিডিও",
     image: "https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg",
     link: "https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32",
     category: "popular",
@@ -81,7 +81,7 @@ const mediaItems: MediaItem[] = [
   },
   {
     id: "9",
-    caption: "সোশ্যাল মিডিয়ায় তোলপাড় করা নতুন ভিডিও",
+    caption: "নতুন প্রজন্মের প্রিয় কিছু বাছাইকৃত ভিডিও সংগ্রহ",
     image: "https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg",
     link: "https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32",
     category: "special",
@@ -229,12 +229,53 @@ const AdsterraNativeBanner = () => {
   );
 };
 
+const NAV_ITEMS = [
+  { id: "home", label: "হোম", icon: Home },
+  { id: "new", label: "নতুন", icon: Clock },
+  { id: "popular", label: "জনপ্রিয়", icon: TrendingUp },
+  { id: "special", label: "বিশেষ", icon: Star },
+  { id: "contact", label: "যোগাযোগ", icon: Phone }
+];
+
+const SectionHeader = ({ title, icon: Icon }: { title: string; icon: any }) => (
+  <div className="flex items-center gap-3 mb-8 px-2">
+    <div className="h-10 w-10 bg-purple-900/30 rounded-xl flex items-center justify-center text-xl shadow-inner border border-purple-500/20">
+      <Icon className="h-5 w-5 text-purple-400" />
+    </div>
+    <h2 className="font-bengali text-xl md:text-2xl font-bold text-white tracking-tight">
+      {title}
+    </h2>
+  </div>
+);
+
+const InfoPage = ({ title, icon: Icon, children }: { title: string; icon: any; children: React.ReactNode }) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="max-w-4xl mx-auto py-12 px-4 shadow-2xl"
+  >
+    <div className="flex flex-col items-center text-center mb-12">
+      <div className="h-16 w-16 bg-purple-600/20 rounded-2xl flex items-center justify-center mb-6 border border-purple-500/30">
+        <Icon className="h-8 w-8 text-purple-400" />
+      </div>
+      <h2 className="font-bengali text-3xl md:text-4xl font-black text-white mb-4 italic logo-text">{title}</h2>
+      <div className="h-1.5 w-20 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full" />
+    </div>
+    <div className="bg-[#111118]/60 backdrop-blur-md border border-white/5 rounded-3xl p-8 md:p-12 font-bengali text-slate-300 leading-relaxed text-base md:text-lg space-y-6">
+      {children}
+    </div>
+  </motion.div>
+);
+
 export default function App() {
   const [activeCategory, setActiveCategory] = useState<"all" | "new" | "popular" | "special">("all");
+  const [activeTab, setActiveTab] = useState("home");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isShareCopied, setIsShareCopied] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState<"home" | "about" | "contact" | "privacy" | "disclaimer">("home");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -299,347 +340,412 @@ export default function App() {
       <BubbleBackground />
       
       {/* Header section */}
-      <header className="sticky top-0 z-50 w-full bg-[#050505]/80 backdrop-blur-xl border-b border-white/5 px-4 md:px-6 py-3 md:py-4 transition-all duration-300 shadow-xl">
-        <div className="mx-auto max-w-7xl flex items-center justify-center">
+      <header className="sticky top-0 z-[100] w-full bg-[#050505]/90 backdrop-blur-xl border-b border-white/5 transition-all duration-300 shadow-2xl">
+        <div className="mx-auto max-w-7xl px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center gap-2"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-3 cursor-pointer"
+            onClick={() => setCurrentPage("home")}
           >
-            <div className="flex items-center gap-3 md:gap-4">
-              <img 
-                src="https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg" 
-                alt="দেশি কালেকশন logo" 
-                className="h-10 w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 rounded-2xl object-cover shadow-[0_0_15px_rgba(124,58,237,0.3)] border border-white/10"
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
-                referrerPolicy="no-referrer"
-              />
-              <div className="flex flex-col items-start text-left">
-                <h1 className="logo-text text-2xl md:text-3xl lg:text-4xl tracking-tight leading-none italic font-black">
-                  দেশি কালেকশন
-                </h1>
-                <p className="font-bengali text-[10px] md:text-xs font-bold text-purple-400 mt-1 uppercase tracking-[0.2em] opacity-80">
-                  PREMIUM VIDEO UPDATES
-                </p>
-              </div>
+            <img 
+              src="https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg" 
+              alt="Desi Collection Logo" 
+              className="h-10 w-10 md:h-12 md:w-12 rounded-xl object-cover shadow-[0_0_15px_rgba(124,58,237,0.3)] border border-white/10"
+              loading="eager"
+            />
+            <div className="flex flex-col items-start">
+              <h1 className="logo-text text-xl md:text-2xl tracking-tight leading-none italic font-black">
+                দেশি কালেকশন
+              </h1>
+              <p className="font-bengali text-[8px] md:text-[10px] font-bold text-purple-400 mt-0.5 uppercase tracking-widest opacity-80">
+                PREMIUM GALLERY
+              </p>
             </div>
           </motion.div>
-        </div>
-      </header>
 
-      <main className="mx-auto max-w-7xl px-3 md:px-6 py-5 md:py-10">
-        {/* News Ticker */}
-        <div className="ticker-container">
-          <div className="ticker-label">নোটিশ</div>
-          <div className="ticker-content">
-            <div className="ticker-text">
-              📢 ভিডিও দেখতে চাইলে বিজ্ঞাপন আসতে পারে, তবে ধৈর্য ধরলে অবশ্যই ভিডিও দেখতে পারবেন
-            </div>
-          </div>
-        </div>
-
-        {/* Search & Filters */}
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-4 md:gap-8 mb-8 md:mb-12">
-          {/* Category Filter */}
-          <div className="sticky top-[61px] lg:relative lg:top-0 z-40 w-screen lg:w-auto py-3 lg:py-0 bg-[#050505]/95 lg:bg-transparent backdrop-blur-lg lg:backdrop-blur-none border-b lg:border-none border-white/5 flex flex-wrap justify-center gap-2 -mx-3 px-3 shadow-sm lg:shadow-none mb-2 lg:mb-0">
-            {[
-              { id: "all", label: "সব ভিডিও" },
-              { id: "new", label: "নতুন" },
-              { id: "popular", label: "জনপ্রিয়" },
-              { id: "বিশেষ", label: "বিশেষ" }
-            ].map((cat) => (
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-2">
+            {NAV_ITEMS.map((item) => (
               <button
-                id={`filter-${cat.id}`}
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id === "বিশেষ" ? "special" : cat.id as any)}
-                className={`category-btn whitespace-nowrap ${
-                  (activeCategory === cat.id || (activeCategory === "special" && cat.id === "বিশেষ")) 
-                    ? "category-btn-active" 
-                    : "category-btn-inactive"
-                }`}
+                key={item.id}
+                onClick={() => {
+                  if (item.id === "contact") setCurrentPage("contact");
+                  else if (item.id === "home") { setCurrentPage("home"); setActiveCategory("all"); }
+                  else { setCurrentPage("home"); setActiveCategory(item.id as any); }
+                  setActiveTab(item.id);
+                }}
+                className={`nav-link ${activeTab === item.id ? "nav-link-active" : ""}`}
               >
-                {cat.label}
+                {item.label}
               </button>
             ))}
-          </div>
+          </nav>
 
-          {/* Search Box */}
-          <div className="flex flex-col gap-1.5 w-full max-w-xs md:max-w-sm">
-            <p className="font-bengali text-[10px] md:text-xs text-slate-400 font-medium px-1 text-center lg:text-left">
-              যে ভিডিও খুঁজছেন, search box-এ লিখে দেখুন
-            </p>
-            <div className="relative w-full">
-              <input
-                type="text"
-                placeholder="ভিডিও খুঁজুন..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 md:py-2.5 bg-[#111118] border border-white/5 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all font-bengali text-xs md:text-sm text-white placeholder-slate-600"
-              />
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 md:h-4 md:w-4 text-slate-500" />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-purple-400"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
-            </div>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={handleShare}
+              className="p-2.5 bg-white/5 border border-white/5 rounded-xl text-slate-400 hover:text-purple-400 transition-all lg:hidden"
+            >
+              <Share2 className="h-5 w-5" />
+            </button>
+            <button 
+              className="lg:hidden p-2.5 bg-white/5 border border-white/5 rounded-xl text-slate-400"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+            
+            <button 
+              onClick={handleShare}
+              className="hidden lg:flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bengali text-sm font-bold rounded-xl shadow-lg shadow-purple-500/20 hover:scale-105 transition-all"
+            >
+              <Share2 className="h-4 w-4" />
+              শেয়ার করুন
+            </button>
           </div>
         </div>
 
-        {/* Video Grid - Optimized for 2 columns on mobile */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-8">
-          <AnimatePresence mode="popLayout" initial={false}>
-            {isLoading ? (
-              Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
-            ) : filteredMedia.length > 0 ? (
-              filteredMedia.map((item, index) => (
-                <VideoCard key={item.id} item={item} index={index} priority={index < 2} />
-              ))
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="col-span-full py-16 md:py-24 flex flex-col items-center text-center px-4"
-              >
-                <div className="h-20 w-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-6 shadow-sm border border-slate-100">
-                  <Search className="h-10 w-10 text-slate-300" />
-                </div>
-                <h3 className="font-bengali text-xl md:text-2xl font-bold text-slate-800">
-                  কোনো ভিডিও পাওয়া যায়নি
-                </h3>
-                <p className="font-bengali text-slate-500 text-sm md:text-base mt-3 max-w-sm leading-relaxed">
-                  অনুগ্রহ করে পরে আবার চেষ্টা করুন বা অন্য নাম লিখে খুঁজুন। আমাদের সংগ্রহে থাকা অন্য ভিডিওগুলো দেখতে পারেন।
-                </p>
-                <button 
-                  onClick={() => { setSearchQuery(""); setActiveCategory("all"); }}
-                  className="mt-8 px-6 py-2.5 bg-blue-600 text-white font-bengali text-sm font-bold rounded-xl shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all"
-                >
-                  সব ভিডিও দেখুন
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Adsterra Native Banner */}
-        {renderBelowFold && (
-          <div style={{ contentVisibility: 'auto', containIntrinsicSize: '0 250px' }}>
-            <AdsterraNativeBanner />
-          </div>
-        )}
-
-        {/* Upcoming Videos Section */}
-        {renderBelowFold && (
-          <div className="mt-16 mb-8" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 400px' }}>
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
             <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="p-6 md:p-8 bg-gradient-to-br from-slate-50 to-blue-50 border border-blue-100/50 rounded-[2rem] shadow-sm relative overflow-hidden group mb-8"
-          >
-            <div className="absolute top-0 right-0 p-4 opacity-10 blur-sm group-hover:opacity-20 transition-opacity">
-              <span className="text-6xl md:text-8xl">🎬</span>
-            </div>
-            <div className="relative z-10 flex flex-col md:flex-row items-center gap-5 text-center md:text-left">
-              <div className="h-14 w-14 md:h-16 md:w-16 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-sm border border-blue-100">
-                🔥
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="lg:hidden bg-[#050505] border-t border-white/5 overflow-hidden"
+            >
+              <div className="p-4 space-y-1">
+                {NAV_ITEMS.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      if (item.id === "contact") setCurrentPage("contact");
+                      else if (item.id === "home") { setCurrentPage("home"); setActiveCategory("all"); }
+                      else { setCurrentPage("home"); setActiveCategory(item.id as any); }
+                      setActiveTab(item.id);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl font-bengali font-bold transition-all ${
+                      activeTab === item.id ? "bg-purple-600/10 text-purple-400" : "text-slate-400 hover:bg-white/5"
+                    }`}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.label}
+                  </button>
+                ))}
               </div>
-              <div className="space-y-2">
-                <h3 className="font-bengali text-xl md:text-2xl font-bold text-slate-800 flex items-center justify-center md:justify-start gap-2">
-                  নতুন ভিডিও আসছে
-                </h3>
-                <p className="font-bengali text-sm md:text-base text-slate-600 leading-relaxed max-w-2xl">
-                  আরও নতুন ভিডিও খুব শিগগিরই আপলোড করা হবে। আপডেট পেতে আমাদের <span className="text-blue-600 font-bold">Telegram Channel</span>-এ Join করুন।
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
+
+      <main className="mx-auto max-w-7xl px-3 md:px-6 pb-20">
+        {currentPage === "home" ? (
+          <>
+            {/* Hero Section */}
+            <section className="py-12 md:py-20 text-center relative overflow-hidden">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="relative z-10 space-y-4"
+              >
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-purple-500/10 border border-purple-500/20 rounded-full text-purple-400 text-[10px] md:text-xs font-bold tracking-widest uppercase mb-4">
+                  <Sparkles className="h-3 w-3" />
+                  Premium Entertainment
+                </div>
+                <h2 className="font-bengali text-4xl md:text-6xl font-black text-white italic tracking-tighter leading-tight logo-text">
+                  দেশি কালেকশন — প্রিমিয়াম ভিডিও আপডেট
+                </h2>
+                <p className="font-bengali text-slate-400 text-sm md:text-xl max-w-2xl mx-auto leading-relaxed">
+                  নতুন, জনপ্রিয় এবং বিশেষ বিনোদনমূলক ভিডিওর সেরা আপডেটগুলি এখন এক জায়গায়। আমাদের সাথে যুক্ত থাকুন।
                 </p>
+                <div className="pt-4">
+                  <a 
+                    href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bengali font-bold rounded-2xl shadow-xl shadow-purple-500/20 hover:scale-105 transition-all"
+                  >
+                    টেলিগ্রামে যুক্ত হন
+                    <ChevronUp className="h-4 w-4 rotate-90" />
+                  </a>
+                </div>
+              </motion.div>
+            </section>
+
+            {/* News Ticker */}
+            <div className="ticker-container group cursor-default">
+              <div className="ticker-label">
+                <Clock className="h-3.5 w-3.5 md:h-4 md:w-4 mr-2" />
+                নোটিশ
+              </div>
+              <div className="ticker-content">
+                <div className="ticker-text group-hover:[animation-play-state:paused]">
+                  📢 নতুন ভিডিও আপডেট পেতে আমাদের Telegram চ্যানেলে যুক্ত থাকুন &nbsp;&nbsp; • &nbsp;&nbsp; ভিডিও লোড হতে সময় নিলে কিছুক্ষণ অপেক্ষা করুন &nbsp;&nbsp; • &nbsp;&nbsp; দেশি কালেকশনে নিয়মিত ভিজিট করার জন্য ধন্যবাদ
+                </div>
               </div>
             </div>
-          </motion.div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            {[
-              {
-                caption: "শিগগিরই আসছে নতুন আলোচিত ভিডিও",
-                image: "https://i.postimg.cc/vmCZ33rt/photo-2025-05-31-10-34-32.jpg"
-              },
-              {
-                caption: "নতুন চাঞ্চল্যকর ভিডিও আপডেট আসছে",
-                image: "https://i.postimg.cc/d0gV442X/photo-2025-07-19-15-21-23-(2).jpg"
-              },
-              {
-                caption: "আরও একটি বিশেষ ভিডিও খুব শিগগিরই",
-                image: "https://i.postimg.cc/vHGHq1nF/photo-2025-07-19-15-21-23.jpg"
-              },
-              {
-                caption: "নতুন ভাইরাল আপডেট দেখতে অপেক্ষা করুন",
-                image: "https://i.postimg.cc/q76khyPB/photo-2026-04-12-06-42-22.jpg"
-              }
-            ].map((item, index) => (
+            {/* Search & Filters */}
+            <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6 mb-12">
+              {/* Category Filter */}
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 lg:pb-0 px-2 lg:px-0">
+                {[
+                  { id: "all", label: "সব ভিডিও" },
+                  { id: "new", label: "নতুন" },
+                  { id: "popular", label: "জনপ্রিয়" },
+                  { id: "special", label: "বিশেষ" }
+                ].map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                      setActiveCategory(cat.id === "বিশেষ" ? "special" : cat.id as any);
+                      setActiveTab(cat.id);
+                    }}
+                    className={`category-btn whitespace-nowrap px-6 py-3 rounded-2xl text-sm font-bold font-bengali transition-all ${
+                      (activeTab === cat.id) 
+                        ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/20 scale-105" 
+                        : "bg-[#111118] border border-white/5 text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Search Box */}
+              <div className="relative w-full max-w-full lg:max-w-xs px-2 lg:px-0">
+                <input
+                  type="text"
+                  placeholder="ভিডিও খুঁজুন..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3.5 bg-[#111118] border border-white/5 rounded-2xl shadow-inner focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all font-bengali text-sm text-white placeholder-slate-600"
+                />
+                <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 hover:text-purple-400"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <SectionHeader title="আমাদের সংগ্রহ" icon={Video} />
+
+            {/* Video Grid - Optimized for 2 columns on mobile */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 md:gap-8 mb-16">
+              <AnimatePresence mode="popLayout" initial={false}>
+                {isLoading ? (
+                  Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+                ) : filteredMedia.length > 0 ? (
+                  filteredMedia.map((item, index) => (
+                    <VideoCard key={item.id} item={item} index={index} priority={index < 3} />
+                  ))
+                ) : (
+                  <div className="col-span-full py-20 flex flex-col items-center text-center opacity-60">
+                    <Search className="h-12 w-12 text-slate-600 mb-4" />
+                    <p className="font-bengali text-slate-500 font-bold">দুঃখিত! এই নামে কোনো ভিডিও পাওয়া যায়নি।</p>
+                  </div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Load More Button */}
+            {!isLoading && filteredMedia.length > 0 && (
+              <div className="flex justify-center mb-24">
+                <button className="px-10 py-4 bg-[#111118] border border-white/5 text-slate-300 font-bengali font-bold rounded-2xl hover:bg-white/5 hover:text-white transition-all shadow-xl group flex items-center gap-2">
+                  আরও ভিডিও দেখুন
+                  <ChevronUp className="h-4 w-4 rotate-180 group-hover:translate-y-1 transition-transform" />
+                </button>
+              </div>
+            )}
+
+            {/* Adsterra Native Banner */}
+            {renderBelowFold && (
+              <div className="mb-16">
+                <AdsterraNativeBanner />
+              </div>
+            )}
+
+            {/* Most Watched Section */}
+            {renderBelowFold && (
+              <div className="mt-20">
+                <SectionHeader title="পপুলার ভিডিও আপডেট" icon={TrendingUp} />
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {[
+                    {
+                      caption: "গত সপ্তাহের আলোচিত সেরা ভিডিও কালেকশন",
+                      image: "https://i.postimg.cc/q76khyPB/photo-2026-04-12-06-42-22.jpg",
+                      views: "১.২ লক্ষ"
+                    },
+                    {
+                      caption: "সোশ্যাল মিডিয়ায় সবচেয়ে বেশি দেখা ভিডিও",
+                      image: "https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg",
+                      views: "৯৫ হাজার"
+                    },
+                    {
+                      caption: "বাছাইকৃত স্পেশাল বিনোদনমূলক ভিডিও",
+                      image: "https://i.postimg.cc/vHGHq1nF/photo-2025-07-19-15-21-23.jpg",
+                      views: "৮০ হাজার"
+                    },
+                    {
+                      caption: "জনপ্রিয়তার শীর্ষে থাকা সেরা আপডেট",
+                      image: "https://i.postimg.cc/vmCZ33rt/photo-2025-05-31-10-34-32.jpg",
+                      views: "১.৫ লক্ষ"
+                    }
+                  ].map((item, index) => (
+                    <motion.a
+                      key={index}
+                      href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.1 }}
+                      className="group relative bg-[#111118] rounded-2xl overflow-hidden border border-white/5 shadow-xl hover:shadow-purple-500/10 transition-all flex flex-col"
+                    >
+                      <div className="relative aspect-video overflow-hidden">
+                        <img
+                          src={item.image}
+                          alt={item.caption}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                          loading="lazy"
+                        />
+                        <div className="absolute bottom-2 left-2 z-20">
+                          <span className="px-2 py-0.5 bg-black/80 backdrop-blur-md text-white text-[9px] font-semibold rounded-md flex items-center gap-1 border border-white/5 font-bengali">
+                            👁️ {item.views}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-4 bg-[#111118]">
+                        <h4 className="font-bengali text-xs font-bold text-slate-200 line-clamp-1 group-hover:text-purple-400 transition-colors">
+                          {item.caption}
+                        </h4>
+                      </div>
+                    </motion.a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Telegram Join Bottom Banner */}
+            {renderBelowFold && (
               <motion.a
-                key={index}
+                id="telegram-bottom-join"
                 href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32"
                 target="_blank"
                 rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="group relative bg-[#111118] rounded-2xl overflow-hidden border border-white/5 shadow-xl hover:shadow-purple-500/10 transition-all h-full"
+                whileHover={{ scale: 1.01 }}
+                className="mt-16 block w-full p-6 md:p-10 bg-[#111118] border border-white/5 rounded-[2rem] shadow-2xl hover:shadow-purple-500/10 transition-all cursor-pointer overflow-hidden group"
               >
-                <div className="relative aspect-video overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.caption}
-                    className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-110"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div className="absolute top-2 right-2 z-20">
-                    <span className="px-2 py-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-[10px] md:text-xs font-bold font-bengali rounded-lg shadow-lg">
-                      আসছে
-                    </span>
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 md:h-16 md:w-16 bg-[#1a1a25] rounded-2xl flex items-center justify-center text-2xl md:text-3xl text-purple-400 shadow-inner border border-white/5">
+                      ✈️
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-bengali text-lg md:text-2xl font-bold text-white">
+                        নতুন নতুন ভিডিও দেখতে আমাদের Telegram Channel-এ Join করুন
+                      </h3>
+                      <p className="font-bengali text-xs md:text-sm text-slate-400 font-medium opacity-80">প্রতিদিন লেটেস্ট ভিডিওর আপডেট পান সবার আগে</p>
+                    </div>
                   </div>
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500" />
-                </div>
-                <div className="p-3 bg-[#111118]">
-                  <h4 className="font-bengali text-[11px] md:text-sm font-bold text-slate-200 line-clamp-2 leading-relaxed">
-                    {item.caption}
-                  </h4>
+                  <div className="px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bengali text-sm md:text-base font-bold rounded-2xl shadow-lg shadow-purple-500/30 group-hover:scale-105 transition-transform">
+                    Join Now
+                  </div>
                 </div>
               </motion.a>
-            ))}
-          </div>
-        </div>
-      )}
-
-        {/* Most Watched Section */}
-        {renderBelowFold && (
-          <div className="mt-16" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 500px' }}>
-            <div className="flex items-center gap-3 mb-6 px-2">
-            <div className="h-10 w-10 bg-purple-900/30 rounded-xl flex items-center justify-center text-xl shadow-inner border border-purple-500/20">
-              🔥
+            )}
+          </>
+        ) : currentPage === "about" ? (
+          <InfoPage title="আমাদের সম্পর্কে" icon={Info}>
+            <p><strong>দেশি কালেকশন</strong> একটি প্রিমিয়াম বিনোদনমূলক গ্যালারি প্ল্যাটফর্ম। আমরা দেশি এবং আন্তর্জাতিক সোশ্যাল মিডিয়ায় ভাইরাল হওয়া সব আলোচিত ভিডিও ও খবর সবার আগে আপনাদের মাঝে পৌঁছে দেই।</p>
+            <p className="mt-4">নিত্যনতুন বিনোদন এবং বিশেষ কালেকশনের জন্য আমাদের সাথেই থাকুন। আমাদের লক্ষ্য হলো আপনাদের জন্য একটি নিরাপদ এবং উন্নত গ্যালারি তৈরি করা।</p>
+          </InfoPage>
+        ) : currentPage === "contact" ? (
+          <InfoPage title="যোগাযোগ করুন" icon={Phone}>
+            <p className="text-center mb-6">আমাদের সাথে যোগাযোগ করতে বা আপনার কোনো ভিডিও আমাদের চ্যানেলে যুক্ত করতে চাইলে টেলিগ্রামে নক দিন।</p>
+            <div className="flex justify-center">
+              <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" className="px-8 py-3 bg-purple-600 text-white font-bold rounded-xl">টেলিগ্রাম সাপোর্ট</a>
             </div>
-            <h2 className="font-bengali text-xl md:text-2xl font-bold text-white">
-              জনপ্রিয় ভিডিও
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-            {[
-              {
-                caption: "গত সপ্তাহের সবচেয়ে পপুলার ভিডিও",
-                image: "https://i.postimg.cc/q76khyPB/photo-2026-04-12-06-42-22.jpg",
-                views: "১.২ লক্ষ"
-              },
-              {
-                caption: "সবচেয়ে বেশিবার দেখা ভিডিও আপডেট",
-                image: "https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg",
-                views: "৯৫ হাজার"
-              },
-              {
-                caption: "ভাইরাল হওয়া স্পেশাল ভিডিও কালেকশন",
-                image: "https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg",
-                views: "৮০ হাজার"
-              },
-              {
-                caption: "জনপ্রিয় ভিডিওর সেরা আপডেটগুলি দেখুন",
-                image: "https://i.postimg.cc/vmCZ33rt/photo-2025-05-31-10-34-32.jpg",
-                views: "১.৫ লক্ষ"
-              }
-            ].map((item, index) => (
-              <motion.a
-                key={index}
-                href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32"
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="group relative bg-[#111118] rounded-2xl overflow-hidden border border-white/5 shadow-xl hover:shadow-purple-500/10 transition-all flex flex-col"
-              >
-                <div className="relative aspect-video overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.caption}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-90 group-hover:opacity-100"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div className="absolute bottom-2 left-2 z-20">
-                    <span className="px-2 py-0.5 bg-black/80 backdrop-blur-md text-white text-[9px] md:text-xs font-semibold rounded-md flex items-center gap-1 border border-white/5">
-                      👁️ {item.views}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
-                </div>
-                <div className="p-3 bg-[#111118] flex-grow">
-                  <h4 className="font-bengali text-[10px] md:text-sm font-bold text-slate-200 line-clamp-2">
-                    {item.caption}
-                  </h4>
-                </div>
-              </motion.a>
-            ))}
-          </div>
-        </div>
-      )}
-
-        {/* Telegram Join Bottom Banner */}
-        {renderBelowFold && (
-          <motion.a
-            id="telegram-bottom-join"
-          href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32"
-          target="_blank"
-          rel="noopener noreferrer"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          whileHover={{ scale: 1.01 }}
-          className="mt-16 block w-full p-6 md:p-10 bg-[#111118] border border-white/5 rounded-[2rem] shadow-2xl hover:shadow-purple-500/10 transition-all cursor-pointer overflow-hidden group"
-        >
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-            <div className="flex items-center gap-4">
-              <div className="h-12 w-12 md:h-16 md:w-16 bg-[#1a1a25] rounded-2xl flex items-center justify-center text-2xl md:text-3xl text-purple-400 shadow-inner border border-white/5">
-                ✈️
-              </div>
-              <div className="space-y-1">
-                <h3 className="font-bengali text-lg md:text-2xl font-bold text-white">
-                  নতুন নতুন ভিডিও দেখতে আমাদের Telegram Channel-এ Join করুন
-                </h3>
-                <p className="font-bengali text-xs md:text-sm text-slate-400 font-medium opacity-80">প্রতিদিন লেটেস্ট ভিডিওর আপডেট পান সবার আগে</p>
-              </div>
-            </div>
-            <div className="px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bengali text-sm md:text-base font-bold rounded-2xl shadow-lg shadow-purple-500/30 group-hover:scale-105 transition-transform">
-              Join Now
-            </div>
-          </div>
-        </motion.a>
+          </InfoPage>
+        ) : currentPage === "privacy" ? (
+          <InfoPage title="গোপনীয়তা নীতিমালা" icon={Shield}>
+            <p>আমরা আমাদের ব্যবহারকারীদের গোপনীয়তাকে সর্বোচ্চ গুরুত্ব দেই। আপনার কোনো ব্যক্তিগত তথ্য এই সাইটে জমা রাখা হয় না। ব্রাউজিং অভিজ্ঞতা উন্নত করতে কুকিজ ব্যবহৃত হতে পারে।</p>
+          </InfoPage>
+        ) : (
+          <InfoPage title="ডিসক্লেইমার" icon={HelpCircle}>
+            <p>দেশি কালেকশন একটি এন্টারটেইনমেন্ট অ্যাগ্রিগেটর সাইট। এখানে প্রদর্শিত অধিকাংশ কন্টেন্ট পাবলিক সোর্স থেকে সংগৃহীত। কোনো কন্টেন্ট নিয়ে অভিযোগ থাকলে আমাদের সাথে যোগাযোগ করুন।</p>
+          </InfoPage>
         )}
       </main>
 
       {/* Footer */}
       {renderBelowFold && (
-        <footer className="mt-20 py-10 border-t border-white/5 bg-[#050505]/50 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-6 text-center space-y-6">
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 font-bengali text-[12px] md:text-[14px] font-bold text-slate-400">
-            <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="hover:text-purple-400 transition-colors uppercase tracking-widest text-[#cbd5e166]">হোম</a>
-            <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="hover:text-purple-400 transition-colors uppercase tracking-widest text-[#cbd5e166]">টেলিগ্রাম</a>
-            <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="hover:text-purple-400 transition-colors uppercase tracking-widest text-[#cbd5e166]">ডিসক্লেইমার</a>
+        <footer className="mt-20 py-16 border-t border-white/5 bg-[#050505]/80 backdrop-blur-md">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 text-center md:text-left">
+              <div className="space-y-6">
+                <div className="flex items-center justify-center md:justify-start gap-3">
+                  <img 
+                    src="https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg" 
+                    className="h-10 w-10 rounded-lg object-cover"
+                    alt="Logo"
+                  />
+                  <span className="logo-text text-xl">দেশি কালেকশন</span>
+                </div>
+                <p className="font-bengali text-slate-400 text-sm leading-relaxed max-w-sm mx-auto md:mx-0">
+                  দেশি কালেকশন আপনার জন্য নিয়ে এসেছে সেরা সব বিনোদনমূলক ভিডিওর দুর্দান্ত সংগ্রহ। আপডেট পেতে টেলিগ্রামে যুক্ত থাকুন।
+                </p>
+                <div className="flex items-center justify-center md:justify-start gap-4">
+                  <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" className="h-10 w-10 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                    ✈️
+                  </a>
+                  <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" className="h-10 w-10 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                    📷
+                  </a>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <h4 className="font-bengali text-white font-bold tracking-widest uppercase text-xs">দ্রুত লিঙ্ক</h4>
+                <ul className="space-y-3 font-bengali text-slate-400 text-sm">
+                  <li><button onClick={() => {setCurrentPage("home"); setActiveCategory("all"); setActiveTab("home"); window.scrollTo(0,0);}} className="hover:text-purple-400 transition-colors">হোম</button></li>
+                  <li><button onClick={() => {setCurrentPage("home"); setActiveCategory("new"); setActiveTab("new"); window.scrollTo(0,0);}} className="hover:text-purple-400 transition-colors">নতুন ভিডিও</button></li>
+                  <li><button onClick={() => {setCurrentPage("home"); setActiveCategory("popular"); setActiveTab("popular"); window.scrollTo(0,0);}} className="hover:text-purple-400 transition-colors">জনপ্রিয় ভিডিও</button></li>
+                  <li><a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" className="hover:text-purple-400 transition-colors">টেলিগ্রাম চ্যানেল</a></li>
+                </ul>
+              </div>
+
+              <div className="space-y-6">
+                <h4 className="font-bengali text-white font-bold tracking-widest uppercase text-xs">আইনী তথ্য</h4>
+                <ul className="space-y-3 font-bengali text-slate-400 text-sm">
+                  <li><button onClick={() => {setCurrentPage("about"); window.scrollTo(0,0);}} className="hover:text-purple-400 transition-colors">আমাদের সম্পর্কে</button></li>
+                  <li><button onClick={() => {setCurrentPage("contact"); window.scrollTo(0,0);}} className="hover:text-purple-400 transition-colors">যোগাযোগ</button></li>
+                  <li><button onClick={() => {setCurrentPage("privacy"); window.scrollTo(0,0);}} className="hover:text-purple-400 transition-colors">গোপনীয়তা নীতিমালা</button></li>
+                  <li><button onClick={() => {setCurrentPage("disclaimer"); window.scrollTo(0,0);}} className="hover:text-purple-400 transition-colors">ডিসক্লেইমার</button></li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-center">
+              <p className="font-bengali text-xs text-slate-500">
+                &copy; ২০২৬ দেশি কালেকশন | সর্বস্বত্ব সংরক্ষিত।
+              </p>
+              <p className="font-bengali text-[10px] text-slate-600 italic">
+                Developed for Entertainment Purposes
+              </p>
+            </div>
           </div>
-          
-          <div className="space-y-2">
-            <p className="font-bengali text-sm md:text-lg font-black text-white tracking-tight opacity-90">
-              © দেশি কালেকশন ২০২৬
-            </p>
-            <p className="font-bengali text-[10px] md:text-[12px] text-slate-500 font-medium opacity-60 italic">
-              ভিডিও দেখতে বিজ্ঞাপন আসতে পারে, এটি সাইটটি সচল রাখতে সহায়তা করে
-            </p>
-          </div>
-        </div>
         </footer>
       )}
 
