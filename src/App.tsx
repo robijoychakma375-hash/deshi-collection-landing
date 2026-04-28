@@ -239,7 +239,6 @@ const AdsterraNativeAd = ({ containerId, scriptUrl }: { containerId: string; scr
   useEffect(() => {
     const scriptId = `adsterra-script-${containerId}`;
     
-    // Cleanup function to remove existing script if any
     const cleanup = () => {
       const existing = document.getElementById(scriptId);
       if (existing) existing.remove();
@@ -268,82 +267,20 @@ const AdsterraNativeAd = ({ containerId, scriptUrl }: { containerId: string; scr
       >
         <span className="animate-pulse">Loading Recommended Ad...</span>
       </div>
-      <p className="text-[9px] text-slate-600 font-medium">Ad may be blocked by browser or unavailable.</p>
+      <p className="text-[9px] text-slate-600 font-medium font-bengali">অ্যাড লোড হচ্ছে অথবা ব্লক করা হয়েছে।</p>
     </div>
   );
 };
 
-const HomepageBannerAd = () => {
-  useEffect(() => {
-    // Cleanup any existing scripts or styles for this placement
-    const containerId = "adsterra-banner-container-homepage";
-    const container = document.getElementById(containerId);
-    if (!container) return;
-
-    container.innerHTML = '';
-    
-    // Set atOptions for the banner
-    (window as any).atOptions = {
-      'key' : 'ecfea6c8e5b05f9ddddc5e31c748bee1',
-      'format' : 'iframe',
-      'height' : 90,
-      'width' : 728,
-      'params' : {}
-    };
-
-    const script = document.createElement("script");
-    script.src = "https://liverdopost.com/ecfea6c8e5b05f9ddddc5e31c748bee1/invoke.js";
-    script.async = true;
-    
-    container.appendChild(script);
-
-    return () => {
-      container.innerHTML = '';
-      delete (window as any).atOptions;
-    };
-  }, []);
-
-  return (
-    <div className="flex flex-col items-center my-12 w-full px-2">
-      <p className="font-bengali text-[10px] text-slate-500 mb-3 uppercase tracking-widest opacity-60">Sponsored Advertisement</p>
-      <div className="w-full max-w-full overflow-x-auto no-scrollbar flex justify-center">
-        <div 
-          id="adsterra-banner-container-homepage" 
-          className="min-w-[728px] min-h-[90px] flex justify-center items-center bg-[#111118] rounded-xl border border-white/5 shadow-inner"
-        >
-          <span className="text-slate-600 text-[10px] italic animate-pulse">Loading Premium Ad...</span>
-        </div>
-      </div>
-      <p className="text-[9px] text-slate-600 mt-3 font-medium opacity-50">Ad may be blocked by browser or unavailable.</p>
-    </div>
-  );
-};
-
-const WatchPageAd = () => (
-  <div className="bg-[#050505]/50 border border-white/5 rounded-3xl p-6 min-h-[220px] flex flex-col items-center justify-center relative w-full mb-8">
-    <span className="absolute top-3 left-6 text-[10px] font-bold text-slate-600 uppercase tracking-widest opacity-60">Recommended</span>
+const HomepageAd = () => (
+  <div className="flex flex-col items-center my-12 w-full max-w-2xl mx-auto px-4">
+    <p className="font-bengali text-[10px] text-slate-500 mb-2 uppercase tracking-widest opacity-60">Sponsored Advertisement</p>
     <AdsterraNativeAd 
-      containerId="container-watch-ad" 
+      containerId="container-homepage-ad" 
       scriptUrl="https://liverdopost.com/e17fb030f8c9a301b2c73825ace55c8c/invoke.js" 
     />
   </div>
 );
-
-const ModalThumbnail = ({ src, alt }: { src: string; alt: string }) => {
-  const [error, setError] = useState(false);
-  return (
-    <div className="aspect-video w-full rounded-2xl overflow-hidden bg-white/5 border border-white/5 mb-2 relative">
-      {!error ? (
-        <img src={src} alt={alt} className="w-full h-full object-cover" onError={() => setError(true)} />
-      ) : (
-        <div className="w-full h-full flex items-center justify-center text-slate-600 bg-[#0a0a0f]">
-          <Video className="h-8 w-8 opacity-20" />
-        </div>
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#050505] to-transparent opacity-40" />
-    </div>
-  );
-};
 
 const InfoPage = ({ title, icon: Icon, children }: { title: string; icon: any; children: React.ReactNode }) => (
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto py-12 px-4 text-center">
@@ -414,21 +351,13 @@ const NAV_ITEMS = [
 ];
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<"home" | "about" | "contact" | "privacy" | "disclaimer" | "watch">("home");
+  const [currentPage, setCurrentPage] = useState<"home" | "about" | "contact" | "privacy" | "disclaimer">("home");
   const [activeCategory, setActiveCategory] = useState<"all" | "new" | "popular" | "special">("all");
   const [activeTab, setActiveTab] = useState("home");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [countdown, setCountdown] = useState(5);
-  const [isCountdownActive, setIsCountdownActive] = useState(false);
-  const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
   const [videoClickCounts, setVideoClickCounts] = useState<Record<string, { count: number; lastReset: number }>>({});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const watchVideo = useMemo(() => {
-    if (!selectedVideoId) return null;
-    return [...mediaItems, ...popularVideos].find(v => v.id === selectedVideoId);
-  }, [selectedVideoId]);
 
   useEffect(() => {
     const saved = localStorage.getItem("desi_collection_limits_v3");
@@ -448,32 +377,28 @@ export default function App() {
   }, []);
 
   const handleVideoClick = (video: MediaItem) => {
-    setSelectedVideoId(video.id);
-    setCurrentPage("watch");
-    setCountdown(5);
-    setIsCountdownActive(true);
-    window.scrollTo(0, 0);
-  };
-
-  const handleRealVideoOpen = (video: MediaItem) => {
     const now = Date.now();
     const record = videoClickCounts[video.id] || { count: 0, lastReset: now };
-    if (now - record.lastReset >= 24 * 60 * 60 * 1000) { record.count = 0; record.lastReset = now; }
-    if (record.count >= 2) { alert("সীমা অতিক্রম করেছেন! ২৪ ঘণ্টা পর আবার চেষ্টা করুন।"); return; }
+    
+    // Check reset
+    if (now - record.lastReset >= 24 * 60 * 60 * 1000) {
+      record.count = 0;
+      record.lastReset = now;
+    }
+    
+    // Check limit
+    if (record.count >= 2) {
+      alert("সীমা অতিক্রম করেছেন! ২৪ ঘণ্টা পর আবার চেষ্টা করুন।");
+      return;
+    }
 
     const newCounts = { ...videoClickCounts, [video.id]: { count: record.count + 1, lastReset: record.lastReset } };
     setVideoClickCounts(newCounts);
     localStorage.setItem("desi_collection_limits_v3", JSON.stringify(newCounts));
-    // Using the Adsterra direct link for the "Click Here" button as requested
-    window.open("https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32", "_blank");
+    
+    // Open video link directly
+    window.open(video.link, "_blank");
   };
-
-  useEffect(() => {
-    let timer: any;
-    if (isCountdownActive && countdown > 0) { timer = setInterval(() => setCountdown(c => c - 1), 1000); }
-    else if (countdown === 0) { setIsCountdownActive(false); }
-    return () => clearInterval(timer);
-  }, [isCountdownActive, countdown]);
 
   const filteredMedia = useMemo(() => {
     return mediaItems.filter(item => {
@@ -593,45 +518,8 @@ export default function App() {
               ))}
             </div>
 
-            <HomepageBannerAd />
+            <HomepageAd />
           </>
-        ) : currentPage === "watch" && watchVideo ? (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-2xl mx-auto">
-            <div className="bg-[#111118]/80 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-6 md:p-10 space-y-8 shadow-2xl">
-              <ModalThumbnail src={watchVideo.image} alt={watchVideo.caption} />
-              <div className="text-center space-y-4">
-                <h3 className="font-bengali text-2xl md:text-3xl font-black text-white italic logo-text italic leading-tight">{watchVideo.caption}</h3>
-                <div className="inline-flex items-center gap-3 px-6 py-2 bg-white/5 rounded-full border border-white/10">
-                  <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
-                  <p className="font-bengali text-slate-400 text-xs md:text-sm">অনুগ্রহ করে {countdown} সেকেন্ড অপেক্ষা করুন</p>
-                </div>
-              </div>
-
-              <WatchPageAd />
-
-              <div className="flex flex-col items-center gap-8">
-                <div className="relative h-20 w-20 flex items-center justify-center bg-white/5 rounded-full border border-white/10 font-black text-3xl italic text-purple-400">{countdown}</div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-                  <a 
-                    href="https://liverdopost.com/kwkq179x?key=8bf2027ac37b7fb30fbf775f8ec8d458" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="flex items-center justify-center gap-3 py-5 bg-white/5 border border-white/5 text-slate-300 font-bold rounded-2xl hover:bg-white/10 transition-all font-bengali"
-                  >
-                    Recommended Link
-                  </a>
-                  <button 
-                    disabled={countdown > 0} 
-                    onClick={() => handleRealVideoOpen(watchVideo)} 
-                    className={`flex items-center justify-center gap-3 py-5 font-bengali font-black rounded-2xl transition-all shadow-xl ${countdown > 0 ? "bg-white/5 text-slate-600 cursor-not-allowed grayscale" : "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-purple-500/30 hover:scale-105 active:scale-95"}`}
-                  >
-                    Click Here
-                  </button>
-                </div>
-                <button onClick={() => setCurrentPage("home")} className="font-bengali text-slate-500 font-bold hover:text-white transition-colors flex items-center gap-2">ফিরে যান</button>
-              </div>
-            </div>
-          </motion.div>
         ) : currentPage === "about" ? (
           <InfoPage title="আমাদের সম্পর্কে" icon={Info}>
             <p><strong>দেশি কালেকশন</strong> একটি প্রিমিয়াম বিনোদনমূলক গ্যালারি প্ল্যাটফর্ম। ভাইরাল হওয়া সব আলোচিত ভিডিও ও খবর সবার আগে আপনাদের মাঝে পৌঁছে দেয়াই আমাদের লক্ষ্য।</p>
