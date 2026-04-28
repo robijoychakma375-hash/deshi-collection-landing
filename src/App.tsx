@@ -273,18 +273,54 @@ const AdsterraNativeAd = ({ containerId, scriptUrl }: { containerId: string; scr
   );
 };
 
-const HomepageAd = () => (
-  <div className="flex flex-col items-center my-12 w-full max-w-2xl mx-auto">
-    <p className="font-bengali text-[10px] text-slate-500 mb-2 uppercase tracking-widest opacity-60">Sponsored Advertisement</p>
-    <AdsterraNativeAd 
-      containerId="container-homepage-ad" 
-      scriptUrl="https://liverdopost.com/e17fb030f8c9a301b2c73825ace55c8c/invoke.js" 
-    />
-  </div>
-);
+const HomepageBannerAd = () => {
+  useEffect(() => {
+    // Cleanup any existing scripts or styles for this placement
+    const containerId = "adsterra-banner-container-homepage";
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = '';
+    
+    // Set atOptions for the banner
+    (window as any).atOptions = {
+      'key' : 'ecfea6c8e5b05f9ddddc5e31c748bee1',
+      'format' : 'iframe',
+      'height' : 90,
+      'width' : 728,
+      'params' : {}
+    };
+
+    const script = document.createElement("script");
+    script.src = "https://liverdopost.com/ecfea6c8e5b05f9ddddc5e31c748bee1/invoke.js";
+    script.async = true;
+    
+    container.appendChild(script);
+
+    return () => {
+      container.innerHTML = '';
+      delete (window as any).atOptions;
+    };
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center my-12 w-full px-2">
+      <p className="font-bengali text-[10px] text-slate-500 mb-3 uppercase tracking-widest opacity-60">Sponsored Advertisement</p>
+      <div className="w-full max-w-full overflow-x-auto no-scrollbar flex justify-center">
+        <div 
+          id="adsterra-banner-container-homepage" 
+          className="min-w-[728px] min-h-[90px] flex justify-center items-center bg-[#111118] rounded-xl border border-white/5 shadow-inner"
+        >
+          <span className="text-slate-600 text-[10px] italic animate-pulse">Loading Premium Ad...</span>
+        </div>
+      </div>
+      <p className="text-[9px] text-slate-600 mt-3 font-medium opacity-50">Ad may be blocked by browser or unavailable.</p>
+    </div>
+  );
+};
 
 const WatchPageAd = () => (
-  <div className="bg-[#050505]/50 border border-white/5 rounded-3xl p-6 min-h-[220px] flex flex-col items-center justify-center relative w-full">
+  <div className="bg-[#050505]/50 border border-white/5 rounded-3xl p-6 min-h-[220px] flex flex-col items-center justify-center relative w-full mb-8">
     <span className="absolute top-3 left-6 text-[10px] font-bold text-slate-600 uppercase tracking-widest opacity-60">Recommended</span>
     <AdsterraNativeAd 
       containerId="container-watch-ad" 
@@ -551,13 +587,13 @@ export default function App() {
             </div>
 
             <SectionHeader title="পপুলার ভিডিও" icon={TrendingUp} />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {popularVideos.map((item, index) => (
                 <VideoCard key={item.id} item={item} index={index} onVideoClick={handleVideoClick} />
               ))}
             </div>
 
-            <HomepageAd />
+            <HomepageBannerAd />
           </>
         ) : currentPage === "watch" && watchVideo ? (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-2xl mx-auto">
@@ -576,8 +612,21 @@ export default function App() {
               <div className="flex flex-col items-center gap-8">
                 <div className="relative h-20 w-20 flex items-center justify-center bg-white/5 rounded-full border border-white/10 font-black text-3xl italic text-purple-400">{countdown}</div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-                  <a href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 py-5 bg-white/5 border border-white/5 text-slate-300 font-bold rounded-2xl hover:bg-white/10 transition-all font-bengali">Recommended Link</a>
-                  <button disabled={countdown > 0} onClick={() => handleRealVideoOpen(watchVideo)} className={`flex items-center justify-center gap-3 py-5 font-bengali font-black rounded-2xl transition-all shadow-xl ${countdown > 0 ? "bg-white/5 text-slate-600 cursor-not-allowed grayscale" : "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-purple-500/30 hover:scale-105 active:scale-95"}`}>Click Here</button>
+                  <a 
+                    href="https://liverdopost.com/kwkq179x?key=8bf2027ac37b7fb30fbf775f8ec8d458" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="flex items-center justify-center gap-3 py-5 bg-white/5 border border-white/5 text-slate-300 font-bold rounded-2xl hover:bg-white/10 transition-all font-bengali"
+                  >
+                    Recommended Link
+                  </a>
+                  <button 
+                    disabled={countdown > 0} 
+                    onClick={() => handleRealVideoOpen(watchVideo)} 
+                    className={`flex items-center justify-center gap-3 py-5 font-bengali font-black rounded-2xl transition-all shadow-xl ${countdown > 0 ? "bg-white/5 text-slate-600 cursor-not-allowed grayscale" : "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-purple-500/30 hover:scale-105 active:scale-95"}`}
+                  >
+                    Click Here
+                  </button>
                 </div>
                 <button onClick={() => setCurrentPage("home")} className="font-bengali text-slate-500 font-bold hover:text-white transition-colors flex items-center gap-2">ফিরে যান</button>
               </div>
