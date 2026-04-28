@@ -235,7 +235,7 @@ const SkeletonCard = () => (
   </div>
 );
 
-const AdsterraNativeAd = ({ containerId }: { containerId: string }) => {
+const AdsterraNativeAd = ({ containerId, scriptUrl }: { containerId: string; scriptUrl: string }) => {
   useEffect(() => {
     const scriptId = `adsterra-script-${containerId}`;
     
@@ -251,14 +251,14 @@ const AdsterraNativeAd = ({ containerId }: { containerId: string }) => {
 
     const script = document.createElement("script");
     script.id = scriptId;
-    script.src = "https://liverdopost.com/e17fb030f8c9a301b2c73825ace55c8c/invoke.js";
+    script.src = scriptUrl;
     script.async = true;
     script.setAttribute("data-cfasync", "false");
     
     document.body.appendChild(script);
 
     return cleanup;
-  }, [containerId]);
+  }, [containerId, scriptUrl]);
 
   return (
     <div className="w-full flex flex-col items-center gap-2">
@@ -268,10 +268,30 @@ const AdsterraNativeAd = ({ containerId }: { containerId: string }) => {
       >
         <span className="animate-pulse">Loading Recommended Ad...</span>
       </div>
-      <p className="text-[9px] text-slate-600 font-medium">Ad may be blocked by browser or ad blocker.</p>
+      <p className="text-[9px] text-slate-600 font-medium">Ad may be blocked by browser or unavailable.</p>
     </div>
   );
 };
+
+const HomepageAd = () => (
+  <div className="flex flex-col items-center my-12 w-full max-w-2xl mx-auto">
+    <p className="font-bengali text-[10px] text-slate-500 mb-2 uppercase tracking-widest opacity-60">Sponsored Advertisement</p>
+    <AdsterraNativeAd 
+      containerId="container-homepage-ad" 
+      scriptUrl="https://liverdopost.com/e17fb030f8c9a301b2c73825ace55c8c/invoke.js" 
+    />
+  </div>
+);
+
+const WatchPageAd = () => (
+  <div className="bg-[#050505]/50 border border-white/5 rounded-3xl p-6 min-h-[220px] flex flex-col items-center justify-center relative w-full">
+    <span className="absolute top-3 left-6 text-[10px] font-bold text-slate-600 uppercase tracking-widest opacity-60">Recommended</span>
+    <AdsterraNativeAd 
+      containerId="container-watch-ad" 
+      scriptUrl="https://liverdopost.com/e17fb030f8c9a301b2c73825ace55c8c/invoke.js" 
+    />
+  </div>
+);
 
 const ModalThumbnail = ({ src, alt }: { src: string; alt: string }) => {
   const [error, setError] = useState(false);
@@ -537,10 +557,7 @@ export default function App() {
               ))}
             </div>
 
-            <div className="flex flex-col items-center mb-12">
-              <p className="font-bengali text-[10px] text-slate-500 mb-2 uppercase tracking-widest opacity-60">Advertisement</p>
-              <AdsterraNativeAd containerId="container-e17fb030f8c9a301b2c73825ace55c8c-home" />
-            </div>
+            <HomepageAd />
           </>
         ) : currentPage === "watch" && watchVideo ? (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-2xl mx-auto">
@@ -554,10 +571,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="bg-[#050505]/50 border border-white/5 rounded-3xl p-6 min-h-[220px] flex flex-col items-center justify-center relative">
-                <span className="absolute top-3 left-6 text-[10px] font-bold text-slate-600 uppercase tracking-widest transition-colors mb-4 block">Recommended</span>
-                <AdsterraNativeAd containerId="container-e17fb030f8c9a301b2c73825ace55c8c-watch" />
-              </div>
+              <WatchPageAd />
 
               <div className="flex flex-col items-center gap-8">
                 <div className="relative h-20 w-20 flex items-center justify-center bg-white/5 rounded-full border border-white/10 font-black text-3xl italic text-purple-400">{countdown}</div>
