@@ -99,7 +99,7 @@ const BubbleBackground = () => (
   </>
 );
 
-const VideoCard = ({ item, index, priority = false }: { item: MediaItem; index: number; priority?: boolean; key?: any }) => {
+const VideoCard = ({ item, index, priority = false, onVideoClick }: { item: MediaItem; index: number; priority?: boolean; onVideoClick: (video: MediaItem) => void }) => {
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'Hot': return 'bg-orange-500 text-white border border-orange-400/30 shadow-[0_0_10px_rgba(249,115,22,0.3)]';
@@ -111,11 +111,9 @@ const VideoCard = ({ item, index, priority = false }: { item: MediaItem; index: 
   };
 
   return (
-    <motion.a
+    <motion.button
       id={`video-card-${item.id}`}
-      href={item.link}
-      target="_blank"
-      rel="noopener noreferrer"
+      onClick={() => onVideoClick(item)}
       layout={!priority}
       initial={priority ? { opacity: 1 } : { opacity: 0, scale: 0.96, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -162,12 +160,12 @@ const VideoCard = ({ item, index, priority = false }: { item: MediaItem; index: 
             {item.category === 'new' ? 'নতুন' : item.category === 'popular' ? 'জনপ্রিয়' : 'বিশেষ'}
           </span>
           <span className="flex items-center gap-1 text-[10px] md:text-[13px] font-bold text-blue-400 font-bengali">
-            আরও দেখুন
-            <Sparkles className="h-3 w-3 md:h-4 md:w-4" />
+            ভিডিও দেখুন
+            <Video className="h-3 w-3 md:h-4 md:w-4" />
           </span>
         </div>
       </div>
-    </motion.a>
+    </motion.button>
   );
 };
 
@@ -276,6 +274,69 @@ export default function App() {
   const [isShareCopied, setIsShareCopied] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState<"home" | "about" | "contact" | "privacy" | "disclaimer">("home");
+
+  // --- New State for Countdown Modal & Click Limits ---
+  const [selectedVideo, setSelectedVideo] = useState<MediaItem | null>(null);
+  const [countdown, setCountdown] = useState(5);
+  const [isCountdownActive, setIsCountdownActive] = useState(false);
+  const [videoClickCounts, setVideoClickCounts] = useState<Record<string, { count: number; lastReset: number }>>({});
+
+  // Load limits from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("desi_collection_limits_v2");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const now = Date.now();
+        const cleaned: Record<string, any> = {};
+        Object.keys(parsed).forEach(id => {
+          if (now - parsed[id].lastReset < 24 * 60 * 60 * 1000) {
+            cleaned[id] = parsed[id];
+          }
+        });
+        setVideoClickCounts(cleaned);
+      } catch (e) {
+        console.error("Limit load error", e);
+      }
+    }
+  }, []);
+
+  const handleVideoClick = (video: MediaItem) => {
+    const now = Date.now();
+    const record = videoClickCounts[video.id] || { count: 0, lastReset: now };
+
+    if (now - record.lastReset >= 24 * 60 * 60 * 1000) {
+      record.count = 0;
+      record.lastReset = now;
+    }
+
+    if (record.count >= 2) {
+      alert("আপনি ইতিমধ্যে এই ভিডিওটি খুলেছেন। অনুগ্রহ করে পরে আবার চেষ্টা করুন।");
+      return;
+    }
+
+    const newCounts = {
+      ...videoClickCounts,
+      [video.id]: { count: record.count + 1, lastReset: record.lastReset }
+    };
+    setVideoClickCounts(newCounts);
+    localStorage.setItem("desi_collection_limits_v2", JSON.stringify(newCounts));
+
+    setSelectedVideo(video);
+    setCountdown(5);
+    setIsCountdownActive(true);
+  };
+
+  // Timer logic
+  useEffect(() => {
+    let timer: any;
+    if (isCountdownActive && countdown > 0) {
+      timer = setInterval(() => setCountdown(c => c - 1), 1000);
+    } else if (countdown === 0) {
+      setIsCountdownActive(false);
+    }
+    return () => clearInterval(timer);
+  }, [isCountdownActive, countdown]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -544,7 +605,7 @@ export default function App() {
                   Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
                 ) : filteredMedia.length > 0 ? (
                   filteredMedia.map((item, index) => (
-                    <VideoCard key={item.id} item={item} index={index} priority={index < 3} />
+                    <VideoCard key={item.id} item={item} index={index} priority={index < 3} onVideoClick={handleVideoClick} />
                   ))
                 ) : (
                   <div className="col-span-full py-20 flex flex-col items-center text-center opacity-60">
@@ -688,6 +749,114 @@ export default function App() {
           </InfoPage>
         )}
       </main>
+
+      {/* Countdown Modal */}
+      <AnimatePresence>
+        {selectedVideo && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedVideo(null)}
+              className="absolute inset-0 bg-[#050505]/95 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-lg bg-[#111118] border border-white/5 rounded-[2.5rem] shadow-2xl overflow-hidden"
+            >
+              <div className="p-6 md:p-8 space-y-6">
+                {/* Header */}
+                <div className="text-center space-y-2">
+                  <h3 className="font-bengali text-xl md:text-2xl font-black text-white italic logo-text">
+                    {selectedVideo.caption}
+                  </h3>
+                  <p className="font-bengali text-slate-400 text-sm">
+                    ভিডিওটি দেখার আগে অনুগ্রহ করে কয়েক সেকেন্ড অপেক্ষা করুন।
+                  </p>
+                </div>
+
+                {/* Ad Area */}
+                <div className="bg-[#050505]/50 border border-white/5 rounded-2xl p-4 min-h-[250px] flex flex-col items-center justify-center relative">
+                  <span className="absolute top-2 left-4 text-[10px] font-bold text-slate-600 uppercase tracking-widest">Recommended</span>
+                  
+                  {/* Adsterra Native Ad Placeholder */}
+                  <div className="w-full text-center py-8">
+                    <p className="text-slate-700 text-xs font-bengali mb-4">আমাদের স্পনসর বিজ্ঞাপন</p>
+                    {/* 
+                        REPLACE WITH REAL ADSTERRA SCRIPT 
+                        Example: <script src="//example.com/ad.js"></script>
+                    */}
+                    <div className="h-32 w-full bg-white/5 rounded-xl border border-dashed border-white/10 flex items-center justify-center text-slate-600 text-xs italic">
+                      Adsterra Native Ad Area
+                    </div>
+                  </div>
+                </div>
+
+                {/* Countdown Timer */}
+                <div className="flex justify-center">
+                  <div className="h-20 w-20 rounded-full border-4 border-white/5 flex items-center justify-center relative">
+                    <svg className="absolute inset-0 w-full h-full -rotate-90">
+                      <circle
+                        cx="40"
+                        cy="40"
+                        r="36"
+                        fill="transparent"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        className="text-purple-600"
+                        strokeDasharray={226}
+                        strokeDashoffset={226 - (226 * (5 - countdown)) / 5}
+                        style={{ transition: 'stroke-dashoffset 1s linear' }}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <span className="text-3xl font-black text-white italic">{countdown}</span>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <a
+                    href="https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32" // REPLACE WITH ADSTERRA DIRECT LINK
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 py-4 bg-white/5 border border-white/5 text-slate-300 font-bengali font-bold rounded-2xl hover:bg-white/10 transition-all hover:scale-[1.02]"
+                  >
+                    <Sparkles className="h-4 w-4 text-purple-400" />
+                    প্রস্তাবিত লিংক
+                  </a>
+                  
+                  <button
+                    disabled={countdown > 0}
+                    onClick={() => {
+                      window.open(selectedVideo.link, "_blank");
+                      setSelectedVideo(null);
+                    }}
+                    className={`flex items-center justify-center gap-2 py-4 font-bengali font-bold rounded-2xl transition-all shadow-xl ${
+                      countdown > 0 
+                        ? "bg-slate-800 text-slate-500 cursor-not-allowed grayscale" 
+                        : "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-purple-500/20 hover:scale-[1.02]"
+                    }`}
+                  >
+                    <Video className="h-4 w-4" />
+                    মূল ভিডিও খুলুন
+                  </button>
+                </div>
+
+                <button 
+                  onClick={() => setSelectedVideo(null)}
+                  className="w-full text-center text-slate-500 text-xs font-bengali hover:text-slate-300 transition-colors py-2"
+                >
+                  ফিরে যান
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Footer */}
       {renderBelowFold && (
