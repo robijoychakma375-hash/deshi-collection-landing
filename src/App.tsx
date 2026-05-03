@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, Video, Sparkles, X, ChevronUp, Share2, Home, Clock, TrendingUp, Star, Phone, Info, Shield, HelpCircle } from "lucide-react";
+import { Search, Video, Sparkles, X, ChevronUp, Share2, Home, Clock, TrendingUp, Star, Phone, Info, Shield, HelpCircle, ChevronRight, Lock, Eye } from "lucide-react";
+import { BrowserRouter, Routes, Route, Link, useNavigate, useParams, useLocation } from "react-router-dom";
 
 // --- Video Data ---
 interface MediaItem {
   id: string;
+  slug: string;
   caption: string;
   image: string;
   link: string;
@@ -17,6 +19,7 @@ interface MediaItem {
 const mediaItems: MediaItem[] = [
   {
     id: "1",
+    slug: "uno-viral-event",
     caption: "ইউএনওর আলোচিত ঘটনা—পুরো ঘটনার বিস্তারিত আপডেট",
     image: "https://i.postimg.cc/QNwWZnxp/photo-2026-03-18-17-40-02(1).jpg",
     link: "https://t.me/desi_collection",
@@ -26,6 +29,7 @@ const mediaItems: MediaItem[] = [
   },
   {
     id: "2",
+    slug: "expatriate-life-stories",
     caption: "প্রবাসীদের জীবনে ঘটে যাওয়া কিছু বাস্তব ঘটনা যা ভাইরাল",
     image: "https://i.postimg.cc/HnD7GBQr/photo-2026-04-21-11-57-03.jpg",
     link: "https://t.me/desi_collection",
@@ -34,6 +38,7 @@ const mediaItems: MediaItem[] = [
   },
   {
     id: "3",
+    slug: "fraud-awareness-tips",
     caption: "প্রতারণা চক্র থেকে বাঁচতে সচেতনতামূলক ভিডিও আপডেট",
     image: "https://i.postimg.cc/0yWM58pn/photo-2026-04-21-13-08-37.jpg",
     link: "https://t.me/desi_collection",
@@ -41,6 +46,7 @@ const mediaItems: MediaItem[] = [
   },
   {
     id: "4",
+    slug: "educational-institute-viral",
     caption: "শিক্ষা প্রতিষ্ঠান কেন্দ্রিক সমসাময়িক আলোচিত ভিডিও",
     image: "https://i.postimg.cc/BZTjL5TP/photo-2026-04-21-13-13-58.jpg",
     link: "https://t.me/desi_collection",
@@ -50,6 +56,7 @@ const mediaItems: MediaItem[] = [
   },
   {
     id: "5",
+    slug: "social-media-top-updates",
     caption: "সোশ্যাল মিডিয়ায় আলোচিত আজকের সেরা আপডেটগুলো",
     image: "https://i.postimg.cc/RFr0qqN5/photo-2026-04-21-11-40-34.jpg",
     link: "https://t.me/desi_collection",
@@ -58,6 +65,7 @@ const mediaItems: MediaItem[] = [
   },
   {
     id: "6",
+    slug: "truth-behind-stories",
     caption: "ঘটনার আড়ালের সত্য প্রকাশ—বিস্তারিত ভিডিওতে দেখুন",
     image: "https://i.postimg.cc/Kvc816vy/photo-2026-04-21-11-38-59.jpg",
     link: "https://t.me/desi_collection",
@@ -66,6 +74,7 @@ const mediaItems: MediaItem[] = [
   },
   {
     id: "7",
+    slug: "picnic-bus-incident",
     caption: "পিকনিকের বাসে ঘটে যাওয়া অনাকাঙ্ক্ষিত ঘটনার ভিডিও",
     image: "https://i.postimg.cc/g0ZfP9Nh/photo-2026-05-01-00-10-47.jpg",
     link: "https://t.me/desi_collection",
@@ -74,6 +83,7 @@ const mediaItems: MediaItem[] = [
   },
   {
     id: "8",
+    slug: "wedding-viral-dance",
     caption: "বিয়েবাড়ির ভাইরাল ভিডিও—সবাইকে তাক লাগিয়ে দিয়েছে",
     image: "https://i.postimg.cc/brzMbZph/photo-2026-04-20-15-24-21.jpg",
     link: "https://t.me/desi_collection",
@@ -84,6 +94,7 @@ const mediaItems: MediaItem[] = [
 const popularVideos: MediaItem[] = [
   {
     id: "popular-1",
+    slug: "weekly-top-collections",
     caption: "গত সপ্তাহের আলোচিত সেরা ভিডিও কালেকশন",
     image: "https://i.postimg.cc/q76khyPB/photo-2026-04-12-06-42-22.jpg",
     link: "https://t.me/desi_collection",
@@ -93,6 +104,7 @@ const popularVideos: MediaItem[] = [
   },
   {
     id: "popular-2",
+    slug: "most-viewed-viral",
     caption: "সোশ্যাল মিডিয়ায় সবচেয়ে বেশি দেখা ভিডিও",
     image: "https://i.postimg.cc/cCLGJN7X/photo-2026-04-21-13-17-44.jpg",
     link: "https://t.me/desi_collection",
@@ -102,6 +114,7 @@ const popularVideos: MediaItem[] = [
   },
   {
     id: "popular-3",
+    slug: "special-entertainment",
     caption: "বাছাইকৃত স্পেশাল বিনোদনমূলক ভিডিও",
     image: "https://i.postimg.cc/vHGHq1nF/photo-2025-07-19-15-21-23.jpg",
     link: "https://t.me/desi_collection",
@@ -110,6 +123,7 @@ const popularVideos: MediaItem[] = [
   },
   {
     id: "popular-4",
+    slug: "top-rated-updates",
     caption: "জনপ্রিয়তার শীর্ষে থাকা সেরা আপডেট",
     image: "https://i.postimg.cc/vmCZ33rt/photo-2025-05-31-10-34-32.jpg",
     link: "https://t.me/desi_collection",
@@ -119,6 +133,7 @@ const popularVideos: MediaItem[] = [
   },
   {
     id: "popular-5",
+    slug: "best-viral-today",
     caption: "আজকের সেরা ভাইরাল ভিডিও আপডেট",
     image: "https://i.postimg.cc/QNwWZnxp/photo-2026-03-18-17-40-02(1).jpg",
     link: "https://t.me/desi_collection",
@@ -127,6 +142,7 @@ const popularVideos: MediaItem[] = [
   },
   {
     id: "popular-6",
+    slug: "mysterious-special-video",
     caption: "বিশেষ সংগৃহীত রহস্যময় ভিডিও",
     image: "https://i.postimg.cc/0yWM58pn/photo-2026-04-21-13-08-37.jpg",
     link: "https://t.me/desi_collection",
@@ -224,7 +240,16 @@ const SectionHeader = ({ title, icon: Icon }: { title: string; icon: any }) => (
   </div>
 );
 
-const VideoCard = ({ item, index, priority = false, onVideoClick }: any) => {
+interface VideoCardProps {
+  item: MediaItem;
+  index: number;
+  priority?: boolean;
+  key?: string | number | null;
+}
+
+const VideoCard = ({ item, index, priority = false }: VideoCardProps) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'Hot': return 'bg-orange-500 text-white border border-orange-400/30 shadow-[0_0_10px_rgba(249,115,22,0.3)]';
@@ -236,62 +261,74 @@ const VideoCard = ({ item, index, priority = false, onVideoClick }: any) => {
   };
 
   return (
-    <motion.button
-      onClick={(e) => {
-        e.preventDefault();
-        onVideoClick(item);
-      }}
-      initial={priority ? { opacity: 1 } : { opacity: 0, scale: 0.96, y: 10 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.2, delay: priority ? 0 : index * 0.02 }}
-      whileHover={{ scale: 1.02, y: -4 }}
-      whileTap={{ scale: 0.98 }}
+    <Link
+      to={`/watch/${item.slug}`}
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       className="video-card group flex flex-col h-full w-full text-left bg-[#111118] border border-white/5 rounded-[1.5rem] overflow-hidden shadow-lg hover:shadow-purple-500/20 hover:border-purple-500/40 transition-all duration-300 cursor-pointer outline-none focus:ring-2 focus:ring-purple-500/50"
     >
-      <div className="relative aspect-video flex-shrink-0 overflow-hidden">
-        <img
-          src={item.image || "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=1000&auto=format&fit=crop"}
-          alt={item.caption}
-          loading={priority ? "eager" : "lazy"}
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-        />
-        
-        {/* Play Icon Overlay */}
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 duration-300">
-          <div className="p-3 bg-white/20 backdrop-blur-md rounded-full border border-white/30 transform scale-75 group-hover:scale-100 transition-transform duration-300">
-            <Video className="h-6 w-6 text-white fill-white" />
+      <motion.div
+        initial={priority ? { opacity: 1 } : { opacity: 0, scale: 0.96, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        transition={{ duration: 0.2, delay: priority ? 0 : index * 0.02 }}
+        whileHover={{ scale: 1.02, y: -4 }}
+        whileTap={{ scale: 0.98 }}
+        className="flex flex-col h-full w-full transform transition-all duration-300"
+      >
+        <div className="relative aspect-video flex-shrink-0 overflow-hidden bg-white/5">
+          {!isLoaded && (
+            <div className="absolute inset-0 bg-white/5 animate-pulse flex items-center justify-center">
+              <Video className="h-8 w-8 text-white/10" />
+            </div>
+          )}
+          <img
+            src={item.image || "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=1000&auto=format&fit=crop"}
+            alt={item.caption}
+            loading={priority ? "eager" : "lazy"}
+            onLoad={() => setIsLoaded(true)}
+            className={`h-full w-full object-cover transition-all duration-700 group-hover:scale-110 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=1000&auto=format&fit=crop";
+              setIsLoaded(true);
+            }}
+          />
+          
+          {/* Play Icon Overlay */}
+          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 duration-300">
+            <div className="p-3 bg-white/20 backdrop-blur-md rounded-full border border-white/30 transform scale-75 group-hover:scale-100 transition-transform duration-300">
+              <Video className="h-6 w-6 text-white fill-white" />
+            </div>
+          </div>
+
+          <div className="video-badge uppercase tracking-widest text-[8px] font-bold pointer-events-none">ভিডিও</div>
+          {item.status && (
+            <div className={`absolute top-3 right-3 z-10 font-bengali text-[9px] md:text-[10px] font-bold px-2 py-1 rounded-lg ${getStatusStyle(item.status)} pointer-events-none`}>
+              {item.status}
+            </div>
+          )}
+
+          {/* Upload Time Badge Overlay */}
+          <div className="absolute bottom-3 right-3 z-10 font-bengali text-[9px] md:text-[10px] font-bold px-2.5 py-1.5 rounded-xl bg-black/70 text-white backdrop-blur-md border border-white/10 flex items-center gap-1.5 shadow-xl group-hover:bg-purple-600 transition-colors duration-300 pointer-events-none">
+            <Clock className="h-3.5 w-3.5 text-purple-400 group-hover:text-white transition-colors" />
+            {getUploadTime(item)}
           </div>
         </div>
-
-        <div className="video-badge uppercase tracking-widest text-[8px] font-bold pointer-events-none">ভিডিও</div>
-        {item.status && (
-          <div className={`absolute top-3 right-3 z-10 font-bengali text-[9px] md:text-[10px] font-bold px-2 py-1 rounded-lg ${getStatusStyle(item.status)} pointer-events-none`}>
-            {item.status}
+        <div className="p-4 md:p-5 flex flex-col flex-1 pointer-events-none">
+          <h3 className="font-bengali text-sm md:text-base font-bold leading-tight line-clamp-2 text-white group-hover:text-purple-400 transition-colors mb-4 min-h-[2.5rem] md:min-h-[3rem]">
+            {item.caption}
+          </h3>
+          <div className="mt-auto flex items-center justify-between gap-2">
+            <span className="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-2 py-1 rounded-lg border border-purple-500/20 font-bengali whitespace-nowrap">
+              {item.category === 'new' ? 'নতুন' : item.category === 'popular' ? 'জনপ্রিয়' : 'বিশেষ'}
+            </span>
+            <span className="flex items-center gap-1 text-[11px] md:text-sm font-bold text-blue-400 font-bengali whitespace-nowrap group-hover:translate-x-1 transition-transform">
+              ভিডিও দেখুন
+              <Video className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            </span>
           </div>
-        )}
-
-        {/* Upload Time Badge Overlay */}
-        <div className="absolute bottom-3 right-3 z-10 font-bengali text-[9px] md:text-[10px] font-bold px-2.5 py-1.5 rounded-xl bg-black/70 text-white backdrop-blur-md border border-white/10 flex items-center gap-1.5 shadow-xl group-hover:bg-purple-600 transition-colors duration-300 pointer-events-none">
-          <Clock className="h-3.5 w-3.5 text-purple-400 group-hover:text-white transition-colors" />
-          {getUploadTime(item)}
         </div>
-      </div>
-      <div className="p-4 md:p-5 flex flex-col flex-1 pointer-events-none">
-        <h3 className="font-bengali text-sm md:text-base font-bold leading-tight line-clamp-2 text-white group-hover:text-purple-400 transition-colors mb-4 min-h-[2.5rem] md:min-h-[3rem]">
-          {item.caption}
-        </h3>
-        <div className="mt-auto flex items-center justify-between gap-2">
-          <span className="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-2 py-1 rounded-lg border border-purple-500/20 font-bengali whitespace-nowrap">
-            {item.category === 'new' ? 'নতুন' : item.category === 'popular' ? 'জনপ্রিয়' : 'বিশেষ'}
-          </span>
-          <span className="flex items-center gap-1 text-[11px] md:text-sm font-bold text-blue-400 font-bengali whitespace-nowrap group-hover:translate-x-1 transition-transform">
-            ভিডিও দেখুন
-            <Video className="h-3.5 w-3.5 md:h-4 md:w-4" />
-          </span>
-        </div>
-      </div>
-    </motion.button>
+      </motion.div>
+    </Link>
   );
 };
 
@@ -338,9 +375,25 @@ const SkeletonCard = () => (
   </div>
 );
 
-const WatchPage = ({ video, allVideos, onBack, onVideoClick }: { video: MediaItem; allVideos: MediaItem[]; onBack: () => void; onVideoClick: (v: MediaItem) => void }) => {
+const allMedia = [...mediaItems, ...popularVideos];
+
+const WatchPage = () => {
+  const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const [timer, setTimer] = useState(10);
   const [canProceed, setCanProceed] = useState(false);
+
+  const video = useMemo(() => allMedia.find(v => v.slug === slug), [slug]);
+
+  useEffect(() => {
+    if (!video) {
+      navigate('/', { replace: true });
+      return;
+    }
+    // Reset timer when video changes
+    setTimer(10);
+    setCanProceed(false);
+  }, [video, navigate]);
 
   useEffect(() => {
     if (timer > 0) {
@@ -352,11 +405,18 @@ const WatchPage = ({ video, allVideos, onBack, onVideoClick }: { video: MediaIte
   }, [timer]);
 
   const relatedVideos = useMemo(() => {
-    return allVideos
+    if (!video) return [];
+    return allMedia
       .filter(v => v.id !== video.id)
       .sort(() => Math.random() - 0.5)
-      .slice(0, 4);
-  }, [allVideos, video.id]);
+      .slice(0, 6);
+  }, [video]);
+
+  if (!video) return null;
+
+  const handleLinkClick = () => {
+    console.log(`[CLICK_TRACK] Recommended Link clicked for video: ${video.id}`);
+  };
 
   return (
     <motion.div 
@@ -364,46 +424,71 @@ const WatchPage = ({ video, allVideos, onBack, onVideoClick }: { video: MediaIte
       animate={{ opacity: 1, y: 0 }}
       className="max-w-6xl mx-auto py-8 px-4"
     >
-      <button onClick={onBack} className="flex items-center gap-2 text-slate-400 hover:text-white mb-8 font-bengali font-bold transition-colors group">
-        <X className="h-4 w-4 group-hover:-translate-x-1 transition-transform" /> ফিরে যান
-      </button>
+      {/* Breadcrumb / Back Button Improvement */}
+      <nav className="flex items-center gap-3 mb-8 overflow-hidden">
+        <Link to="/" className="flex items-center gap-1.5 text-slate-400 hover:text-white font-bengali font-bold transition-all group whitespace-nowrap">
+          <Home className="h-4 w-4" /> হোম
+        </Link>
+        <ChevronRight className="h-4 w-4 text-slate-600 flex-shrink-0" />
+        <span className="text-slate-500 font-bengali font-medium line-clamp-1 max-w-[200px] md:max-w-none">
+          {video.caption}
+        </span>
+      </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
         {/* Main Content Area */}
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-[#111118] rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl relative">
+          <div className="bg-[#111118] rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl relative group">
             <div className="relative aspect-video">
-              <img src={video.image} alt={video.caption} className="w-full h-full object-cover opacity-60 blur-[3px]" />
+              <img 
+                src={video.image} 
+                alt={video.caption} 
+                className="w-full h-full object-cover opacity-60 blur-[3px]"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=1000&auto=format&fit=crop";
+                }}
+              />
               <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-black/50">
-                <div className="p-4 bg-purple-600/20 rounded-2xl border border-purple-500/30 mb-4">
-                  <Video className="h-10 w-10 text-purple-400 animate-pulse" />
+                <div className="p-5 bg-purple-600/20 rounded-3xl border border-purple-500/30 mb-4 shadow-[0_0_20px_rgba(168,85,247,0.2)]">
+                  <Video className="h-12 w-12 text-purple-400 animate-pulse" />
                 </div>
-                <h2 className="font-bengali text-xl md:text-3xl font-black text-white mb-8 leading-tight max-w-2xl px-4">{video.caption}</h2>
+                <h2 className="font-bengali text-xl md:text-3xl font-black text-white mb-8 leading-tight max-w-2xl px-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">{video.caption}</h2>
                 
-                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 w-full max-w-md shadow-2xl">
+                <div className="bg-black/40 backdrop-blur-3xl rounded-[2rem] p-8 border border-white/10 w-full max-w-md shadow-2xl">
                   {!canProceed ? (
                     <div className="space-y-4">
-                      <div className="relative h-20 w-20 mx-auto">
-                        <svg className="h-full w-full rotate-[-90deg] drop-shadow-[0_0_10px_rgba(168,85,247,0.3)]">
-                          <circle cx="40" cy="40" r="36" fill="none" stroke="currentColor" strokeWidth="4" className="text-white/5" />
-                          <circle cx="40" cy="40" r="36" fill="none" stroke="currentColor" strokeWidth="4" className="text-purple-500" strokeDasharray="226" strokeDashoffset={226 - (226 * timer) / 10} strokeLinecap="round" />
+                      <div className="relative h-24 w-24 mx-auto">
+                        <svg className="h-full w-full rotate-[-90deg] drop-shadow-[0_0_15px_rgba(168,85,247,0.4)]">
+                          <circle cx="48" cy="48" r="44" fill="none" stroke="currentColor" strokeWidth="6" className="text-white/5" />
+                          <circle cx="48" cy="48" r="44" fill="none" stroke="currentColor" strokeWidth="6" className="text-purple-500 transition-all duration-1000 ease-linear" strokeDasharray="276" strokeDashoffset={276 - (276 * timer) / 10} strokeLinecap="round" />
                         </svg>
-                        <span className="absolute inset-0 flex items-center justify-center font-bold text-2xl text-white">{timer}</span>
+                        <span className="absolute inset-0 flex items-center justify-center font-black text-3xl text-white">{timer}</span>
                       </div>
-                      <p className="font-bengali text-slate-300 text-sm font-medium">অনুগ্রহ করে কয়েক সেকেন্ড অপেক্ষা করুন...</p>
+                      <div className="space-y-1">
+                        <p className="font-bengali text-slate-300 text-sm font-bold flex items-center justify-center gap-2">
+                           লিংক প্রস্তুত হচ্ছে...
+                        </p>
+                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Please Wait a Moment</p>
+                      </div>
                     </div>
                   ) : (
                     <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="space-y-4">
                       <a 
                         href={ADSTERRA_SMARTLINK}
+                        onClick={handleLinkClick}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-4 w-full py-5 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white font-black rounded-2xl shadow-[0_0_30px_rgba(147,51,234,0.3)] hover:scale-[1.02] active:scale-95 transition-all text-xl font-bengali uppercase tracking-tight"
+                        className="flex items-center justify-center gap-4 w-full py-5 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(147,51,234,0.4)] border border-white/10 hover:scale-[1.03] active:scale-95 transition-all text-xl md:text-2xl font-bengali uppercase tracking-tight group/btn"
                       >
-                        Recommended Link
-                        <Share2 className="h-6 w-6" />
+                        লিংক প্রস্তুত ✅
+                        <Share2 className="h-6 w-6 md:h-7 md:w-7 group-hover/btn:translate-x-1 transition-transform" />
                       </a>
-                      <p className="text-[10px] text-purple-400 font-black uppercase tracking-[0.3em] opacity-80">Safe & Verified Source</p>
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="flex items-center gap-1.5 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] opacity-90">
+                           Safe & Verified Source
+                        </div>
+                        <p className="font-bengali text-slate-400 text-[10px]">এই লিংকটি সম্পূর্ণ নিরাপদ এবং পরীক্ষিত।</p>
+                      </div>
                     </motion.div>
                   )}
                 </div>
@@ -411,67 +496,109 @@ const WatchPage = ({ video, allVideos, onBack, onVideoClick }: { video: MediaIte
             </div>
           </div>
 
-          <div className="bg-white/5 rounded-[2rem] p-8 md:p-10 border border-white/5 space-y-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="h-8 w-1.5 bg-purple-500 rounded-full" />
-              <h3 className="font-bengali text-2xl font-black text-white">ভিডিওর বিবরণ</h3>
+          {/* Trust Messaging */}
+          <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] p-8 border border-white/5 space-y-6">
+            <div className="flex items-center gap-4 border-b border-white/10 pb-6">
+              <div className="h-12 w-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20">
+                <Shield className="h-6 w-6 text-emerald-400" />
+              </div>
+              <div>
+                <h3 className="font-bengali text-xl font-black text-white">সম্পূর্ণ নিরাপদ প্ল্যাটফর্ম</h3>
+                <p className="font-bengali text-slate-400 text-sm">আমরা আপনার গোপনীয়তা এবং নিরাপত্তা নিশ্চিত করি।</p>
+              </div>
             </div>
-            <p className="font-bengali text-slate-300 leading-relaxed text-lg font-medium opacity-90">এই ভিডিওটি বর্তমানে অত্যন্ত আলোচিত। ঘটনার বিস্তারিত আপডেট জানতে উপরের "Recommended Link" বাটনে ক্লিক করুন। আমরা সবসময় সেরা এবং বাছাইকৃত ভিডিওগুলো আপনাদের জন্য সংগ্রহ করি।</p>
+            <div className="space-y-4">
+              <p className="font-bengali text-slate-300 leading-relaxed text-lg font-medium">বিশেষ দ্রষ্টব্য: এই ভিডিওটি বর্তমানে অত্যন্ত আলোচিত এবং এর কন্টেন্ট আমাদের বিশেষ সোর্স থেকে সংগৃহীত। ভিডিওর বিস্তারিত এবং ডাউনলোড লিংক পেতে উপরের <span className="text-purple-400 font-bold">"লিংক প্রস্তুত ✅"</span> বাটনে ক্লিক করুন। আমরা নিয়মিত সেরা কন্টেন্ট আপনাদের জন্য বাছাই করি।</p>
+            </div>
           </div>
         </div>
 
         {/* Info Sidebar Section */}
         <div className="space-y-6">
-          <div className="bg-[#111118]/80 backdrop-blur-xl rounded-[2rem] p-8 border border-white/10 space-y-8">
-            <h4 className="font-bengali text-xl font-black text-white border-b border-white/10 pb-4">ভিডিও ইনফো</h4>
+          <div className="bg-[#111118]/80 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/10 space-y-8 shadow-xl relative overflow-hidden">
+             <div className="absolute top-0 right-0 p-4 opacity-5">
+               <Video className="h-24 w-24" />
+             </div>
+            <h4 className="font-bengali text-xl font-black text-white border-b border-white/10 pb-4 relative z-10">ভিডিও ইনফরমেশন</h4>
             
-            <div className="space-y-6">
+            <div className="space-y-6 relative z-10">
               <div className="p-5 bg-white/5 rounded-2xl border border-white/5 group hover:border-purple-500/30 transition-colors">
-                <h4 className="font-bengali text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">বর্তমান স্ট্যাটাস</h4>
+                <h4 className="font-bengali text-xs font-bold text-slate-500 mb-3 uppercase tracking-wider">বর্তমান স্ট্যাটাস</h4>
                 <div className="flex items-center gap-3">
-                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="inline-block px-4 py-1.5 bg-purple-600/20 text-purple-400 border border-purple-500/30 rounded-xl text-xs font-black uppercase">{video.status || "Premium"}</span>
+                  <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                  <span className="inline-block px-4 py-1.5 bg-emerald-600/10 text-emerald-400 border border-emerald-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest">{video.status || "Premium"}</span>
                 </div>
               </div>
               
               <div className="p-5 bg-white/5 rounded-2xl border border-white/5 group hover:border-blue-500/30 transition-colors">
-                <h4 className="font-bengali text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">ক্যাটাগরি</h4>
-                <span className="inline-block px-4 py-1.5 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-xl text-xs font-black uppercase">
-                  {video.category === 'new' ? 'নতুন' : video.category === 'popular' ? 'জনপ্রিয়' : 'বিশেষ'}
-                </span>
+                <h4 className="font-bengali text-xs font-bold text-slate-500 mb-3 uppercase tracking-wider">ক্যাটাগরি</h4>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-blue-400" />
+                  <span className="font-bengali text-white font-black text-sm uppercase">
+                    {video.category === 'new' ? 'নতুন আপডেট' : video.category === 'popular' ? 'বেশ জনপ্রিয়' : 'স্পেশাল কালেকশন'}
+                  </span>
+                </div>
               </div>
 
               <div className="p-5 bg-white/5 rounded-2xl border border-white/5">
-                <h4 className="font-bengali text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">আপলোড সময়</h4>
+                <h4 className="font-bengali text-xs font-bold text-slate-500 mb-3 uppercase tracking-wider">আপলোড এর সময়</h4>
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-purple-400" />
-                  <p className="font-bengali text-white font-bold">{getUploadTime(video)}</p>
+                  <p className="font-bengali text-white font-bold text-sm">{getUploadTime(video)}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 rounded-[2rem] p-8 border border-white/10">
-            <h4 className="font-bengali text-lg font-bold text-white mb-4">নিরাপদ থাকুন!</h4>
-            <p className="font-bengali text-slate-400 text-sm leading-relaxed">আমাদের শেয়ার করা লিংকগুলো সম্পূর্ণ ভেরিফাইড এবং নিরাপদ। কোনো প্রকার স্প্যাম বা ম্যালওয়্যার থেকে সুরক্ষিত থাকতে নির্ভরযোগ্য লিংকে ক্লিক করুন।</p>
+          <div className="bg-gradient-to-br from-purple-600/20 to-blue-600/20 rounded-[2.5rem] p-8 border border-white/10 group">
+            <div className="h-10 w-10 bg-white/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <HelpCircle className="h-5 w-5 text-purple-400" />
+            </div>
+            <h4 className="font-bengali text-lg font-black text-white mb-4">সাহায্য প্রয়োজন?</h4>
+            <p className="font-bengali text-slate-400 text-sm leading-relaxed mb-6">লিংক ওপেন করতে বা ভিডিও দেখতে কোনো সমস্যা হলে সরাসরি আমাদের সাথে যোগাযোগ করুন।</p>
+            <button onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })} className="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl font-bengali font-bold text-white transition-all">যোগাযোগ করুন</button>
           </div>
         </div>
       </div>
 
-      {/* More Videos Section */}
-      <div className="mt-20">
-        <div className="flex items-center justify-between mb-10">
+      {/* Suggested Videos Section */}
+      <div className="mt-24">
+        <div className="flex items-center justify-between mb-12">
           <SectionHeader title="আরও ভাইরাল ভিডিও" icon={TrendingUp} />
+          <div className="hidden md:flex items-center gap-2 text-purple-400 font-bengali text-sm font-bold bg-purple-500/10 px-4 py-2 rounded-xl border border-purple-500/20">
+            নতুন সংগ্রহ <Sparkles className="h-4 w-4" />
+          </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {relatedVideos.map((item, index) => (
-            <VideoCard key={item.id} item={item} index={index} onVideoClick={onVideoClick} />
+            <VideoCard key={item.id} item={item} index={index} />
           ))}
         </div>
       </div>
+
+      {/* Sticky Mobile Button */}
+      {canProceed && (
+        <motion.div 
+          initial={{ y: 100 }}
+          animate={{ y: 0 }}
+          className="fixed bottom-6 left-6 right-6 z-[100] lg:hidden"
+        >
+          <a 
+            href={ADSTERRA_SMARTLINK}
+            onClick={handleLinkClick}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-3 w-full py-4.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black rounded-2xl shadow-[0_15px_35px_rgba(147,51,234,0.6)] border border-white/20 active:scale-95 transition-all text-xl font-bengali"
+          >
+            লিংক প্রস্তুত ✅
+            <Share2 className="h-6 w-6" />
+          </a>
+        </motion.div>
+      )}
     </motion.div>
   );
 };
+
 const InfoPage = ({ title, icon: Icon, children }: { title: string; icon: any; children: React.ReactNode }) => (
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto py-12 px-4 text-center">
     <div className="h-16 w-16 bg-purple-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-purple-500/30">
@@ -493,18 +620,19 @@ const Footer = ({ onPageChange }: { onPageChange: (page: any) => void }) => (
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="text-left space-y-3">
             <h3 className="font-bengali text-xl md:text-3xl font-black text-white tracking-tight">
-              নতুন আপডেট পেতে Telegram চ্যানেলে যুক্ত হন
+              নতুন আপডেট দেখতে এখানে ক্লিক করুন
             </h3>
-            <p className="font-bengali text-slate-300 text-sm md:text-base">সব সেরা ভাইরাল ভিডিও সবার আগে পেতে আজই জয়েন করুন</p>
+            <p className="font-bengali text-slate-300 text-sm md:text-base">সব সেরা ভাইরাল ভিডিও এবং বিশেষ সংগৃহীত ভিডিওগুলো সবার আগে পান</p>
           </div>
           <a 
             href={ADSTERRA_SMARTLINK} 
+            onClick={handleCTAClick}
             target="_blank" 
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-8 py-3.5 bg-blue-600 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/30 hover:scale-[1.05] active:scale-95 transition-all text-sm"
           >
             <Share2 className="h-4 w-4" />
-            Join Now
+            ক্লিক করুন
           </a>
         </div>
       </div>
@@ -540,46 +668,43 @@ const NAV_ITEMS = [
   { id: "contact", label: "যোগাযোগ", icon: Phone }
 ];
 
+const handleCTAClick = () => {
+  console.log("[CLICK_TRACK] Footer CTA clicked");
+};
+
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<"home" | "watch" | "about" | "contact" | "privacy" | "disclaimer">("home");
-  const [selectedVideo, setSelectedVideo] = useState<MediaItem | null>(null);
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+
+function AppContent() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [activeCategory, setActiveCategory] = useState<"all" | "new" | "popular" | "special">("all");
   const [activeTab, setActiveTab] = useState("home");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [videoClickCounts, setVideoClickCounts] = useState<Record<string, { count: number; lastReset: number }>>({});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(8);
 
   useEffect(() => {
-    const saved = localStorage.getItem("desi_collection_limits_v3");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        const now = Date.now();
-        const cleaned: Record<string, any> = {};
-        Object.keys(parsed).forEach(id => {
-          if (now - parsed[id].lastReset < 24 * 60 * 60 * 1000) cleaned[id] = parsed[id];
-        });
-        setVideoClickCounts(cleaned);
-      } catch (e) {}
-    }
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
   }, []);
 
-  const handleVideoClick = (video: MediaItem) => {
-    console.log("Navigating to video:", video.id, video.caption);
-    
-    // Ensure we have a valid video object
-    if (!video || !video.id) {
-      console.warn("Invalid video clicked");
-      return;
-    }
-
-    setSelectedVideo(video);
-    setCurrentPage("watch");
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  // Synchronize activeTab with URL path
+  useEffect(() => {
+    const path = location.pathname;
+    if (path === '/') setActiveTab('home');
+    else if (path.startsWith('/watch')) setActiveTab('watch');
+    else if (path === '/about') setActiveTab('about');
+    else if (path === '/contact') setActiveTab('contact');
+    else if (path === '/privacy') setActiveTab('privacy');
+    else if (path === '/disclaimer') setActiveTab('disclaimer');
+  }, [location.pathname]);
 
   const filteredMedia = useMemo(() => {
     return mediaItems.filter(item => {
@@ -589,23 +714,32 @@ export default function App() {
     });
   }, [activeCategory, searchQuery]);
 
+  const pagedMedia = useMemo(() => {
+    return filteredMedia.slice(0, visibleCount);
+  }, [filteredMedia, visibleCount]);
+
+  const loadMore = () => {
+    setVisibleCount(prev => prev + 12);
+  };
+
   return (
     <div className="relative min-h-screen bg-[#050505] text-white selection:bg-purple-500/30 font-sans">
       <BubbleBackground />
       
       <header className="sticky top-0 z-[100] w-full bg-[#050505]/95 backdrop-blur-2xl border-b border-white/10 py-5 px-6 shadow-2xl transition-all duration-300">
         <div className="mx-auto max-w-7xl flex items-center justify-between">
-          <div className="cursor-pointer transition-transform hover:scale-[1.02]" onClick={() => {setCurrentPage("home"); setActiveTab("home");}}>
+          <Link to="/" className="cursor-pointer transition-transform hover:scale-[1.02]" onClick={() => { setActiveCategory("all"); setActiveTab("home"); }}>
             <Logo />
-          </div>
+          </Link>
 
           <nav className="hidden lg:flex items-center gap-3">
             {NAV_ITEMS.map(item => (
               <button
                 key={item.id}
                 onClick={() => {
-                  if (item.id === "contact") setCurrentPage("contact");
-                  else { setCurrentPage("home"); setActiveCategory(item.id === "home" ? "all" : item.id as any); }
+                  if (item.id === "contact") navigate("/contact");
+                  else if (item.id === "home") { navigate("/"); setActiveCategory("all"); }
+                  else { navigate("/"); setActiveCategory(item.id as any); }
                   setActiveTab(item.id);
                 }}
                 className={`nav-link px-6 py-2.5 text-sm font-bold font-bengali rounded-2xl transition-all duration-300 ${activeTab === item.id ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-[0_0_20px_rgba(147,51,234,0.3)] scale-105" : "text-slate-300 hover:text-white hover:bg-white/5"}`}
@@ -627,8 +761,9 @@ export default function App() {
                   <button
                     key={item.id}
                     onClick={() => {
-                      if (item.id === "contact") setCurrentPage("contact");
-                      else { setCurrentPage("home"); setActiveCategory(item.id === "home" ? "all" : item.id as any); }
+                      if (item.id === "contact") navigate("/contact");
+                      else if (item.id === "home") { navigate("/"); setActiveCategory("all"); }
+                      else { navigate("/"); setActiveCategory(item.id as any); }
                       setActiveTab(item.id);
                       setIsMobileMenuOpen(false);
                     }}
@@ -645,101 +780,120 @@ export default function App() {
       </header>
 
       <main className="mx-auto max-w-7xl px-3 md:px-6 pb-20 mt-8">
-        {currentPage === "home" ? (
-          <>
-            <section className="py-12 flex flex-col items-center text-center relative space-y-8">
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="mb-4"
-              >
-                <Logo size="lg" />
-              </motion.div>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-purple-500/10 border border-purple-500/20 rounded-full text-purple-400 text-[10px] font-bold tracking-widest uppercase">
-                <Sparkles className="h-3 w-3" /> Premium Entertainment
-              </div>
-              <p className="font-bengali text-slate-200 max-w-2xl mx-auto text-base md:text-2xl leading-relaxed font-medium">ভাইরাল হওয়া সব আলোচিত ভিডিও এবং বিশেষ কালেকশনের সেরা আপডেটগুলো সবার আগে পান এখানে।</p>
-            </section>
+        <Routes>
+          <Route path="/" element={
+            <>
+              <section className="py-12 flex flex-col items-center text-center relative space-y-8">
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="mb-4"
+                >
+                  <Logo size="lg" />
+                </motion.div>
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-purple-500/10 border border-purple-500/20 rounded-full text-purple-400 text-[10px] font-bold tracking-widest uppercase">
+                  <Sparkles className="h-3 w-3" /> Premium Entertainment
+                </div>
+                <p className="font-bengali text-slate-200 max-w-2xl mx-auto text-base md:text-2xl leading-relaxed font-medium">ভাইরাল হওয়া সব আলোচিত ভিডিও এবং বিশেষ কালেকশনের সেরা আপডেটগুলো সবার আগে পান এখানে।</p>
+              </section>
 
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-12">
-              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar w-full lg:w-auto">
-                {["all", "new", "popular", "special"].map(id => (
-                  <button
-                    key={id}
-                    onClick={() => { setActiveCategory(id as any); setActiveTab(id === "all" ? "home" : id); }}
-                    className={`whitespace-nowrap px-6 py-3 rounded-2xl text-sm font-bold font-bengali transition-all ${activeCategory === id ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20" : "bg-[#111118] border border-white/5 text-slate-400"}`}
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-12">
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar w-full lg:w-auto">
+                  {["all", "new", "popular", "special"].map(id => (
+                    <button
+                      key={id}
+                      onClick={() => { setActiveCategory(id as any); setActiveTab(id === "all" ? "home" : id); }}
+                      className={`whitespace-nowrap px-6 py-3 rounded-2xl text-sm font-bold font-bengali transition-all ${activeCategory === id ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20" : "bg-[#111118] border border-white/5 text-slate-400"}`}
+                    >
+                      {id === "all" ? "সব ভিডিও" : id === "new" ? "নতুন" : id === "popular" ? "জনপ্রিয়" : "বিশেষ"}
+                    </button>
+                  ))}
+                </div>
+                <div className="relative w-full lg:max-w-xs">
+                  <input type="text" placeholder="ভিডিও খুঁজুন..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-3.5 bg-[#111118] border border-white/5 rounded-2xl shadow-inner focus:outline-none focus:ring-2 focus:ring-purple-500/20 font-bengali text-sm text-white placeholder-slate-600" />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+                </div>
+              </div>
+
+              <SectionHeader title="আমাদের সংগ্রহ" icon={Video} />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mb-12">
+                <AnimatePresence mode="popLayout">
+                  {isLoading ? (
+                    Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+                  ) : pagedMedia.length > 0 ? (
+                    pagedMedia.map((item, index) => <VideoCard key={item.id} item={item} index={index} />)
+                  ) : !isLoading && pagedMedia.length === 0 ? (
+                    <div className="col-span-full py-20 text-center flex flex-col items-center justify-center space-y-4">
+                      <Search className="h-12 w-12 text-slate-800" />
+                      <div className="opacity-60 font-bengali text-slate-500 font-bold">দুঃখিত, কোনো ভিডিও পাওয়া যায়নি!</div>
+                    </div>
+                  ) : null}
+                </AnimatePresence>
+              </div>
+
+              {/* Load More Button */}
+              {!isLoading && filteredMedia.length > visibleCount && (
+                <div className="flex justify-center mb-16">
+                  <button 
+                    onClick={loadMore}
+                    className="px-12 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bengali font-black rounded-2xl transition-all shadow-xl hover:scale-105 active:scale-95"
                   >
-                    {id === "all" ? "সব ভিডিও" : id === "new" ? "নতুন" : id === "popular" ? "জনপ্রিয়" : "বিশেষ"}
+                    আরও ভিডিও দেখুন
                   </button>
+                </div>
+              )}
+
+              <NativeAd />
+
+              <SectionHeader title="পপুলার ভিডিও" icon={TrendingUp} />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mb-12">
+                {popularVideos.map((item, index) => (
+                  <VideoCard key={item.id} item={item} index={index} />
                 ))}
               </div>
-              <div className="relative w-full lg:max-w-xs">
-                <input type="text" placeholder="ভিডিও খুঁজুন..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-3.5 bg-[#111118] border border-white/5 rounded-2xl shadow-inner focus:outline-none focus:ring-2 focus:ring-purple-500/20 font-bengali text-sm text-white placeholder-slate-600" />
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+            </>
+          } />
+          
+          <Route path="/watch/:slug" element={
+            <WatchPage />
+          } />
+
+          <Route path="/about" element={
+            <InfoPage title="আমাদের সম্পর্কে" icon={Info}>
+              <p><strong>দেশি কালেকশন</strong> একটি প্রিমিয়াম বিনোদনমূলক গ্যালারি প্ল্যাটফর্ম। ভাইরাল হওয়া সব আলোচিত ভিডিও ও খবর সবার আগে আপনাদের মাঝে পৌঁছে দেয়াই আমাদের লক্ষ্য।</p>
+            </InfoPage>
+          } />
+
+          <Route path="/contact" element={
+            <InfoPage title="যোগাযোগ করুন" icon={Phone}>
+              <p className="text-center">যেকোনো সহযোগিতার জন্য বা ভিডিও যুক্ত করতে টেলিগ্রামে যোগাযোগ করুন।</p>
+              <div className="flex justify-center pt-4">
+                <a href={ADSTERRA_SMARTLINK} target="_blank" rel="noopener noreferrer" className="px-10 py-4 bg-purple-600 text-white font-bold rounded-2xl shadow-xl shadow-purple-500/20 hover:scale-105 transition-all font-bengali">লিংক দেখুন</a>
               </div>
-            </div>
+            </InfoPage>
+          } />
 
-            <SectionHeader title="আমাদের সংগ্রহ" icon={Video} />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mb-16">
-              <AnimatePresence mode="popLayout">
-                {isLoading ? (
-                  Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
-                ) : filteredMedia.length > 0 ? (
-                  filteredMedia.map((item, index) => <VideoCard key={item.id} item={item} index={index} onVideoClick={handleVideoClick} />)
-                ) : !isLoading && filteredMedia.length === 0 ? (
-                  <div className="col-span-full py-20 text-center opacity-60 font-bengali text-slate-500 font-bold">ভিডিও পাওয়া যায়নি!</div>
-                ) : null}
-              </AnimatePresence>
-            </div>
+          <Route path="/privacy" element={
+            <InfoPage title="গোপনীয়তা নীতিমালা" icon={Shield}>
+              <p>আপনার তথ্য আমাদের কাছে নিরাপদ। ব্রাউজিং অভিজ্ঞতা উন্নত করতে কুকিজ ব্যবহৃত হতে পারে।</p>
+            </InfoPage>
+          } />
 
-            <NativeAd />
-
-            <SectionHeader title="পপুলার ভিডিও" icon={TrendingUp} />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mb-12">
-              {popularVideos.map((item, index) => (
-                <VideoCard key={item.id} item={item} index={index} onVideoClick={handleVideoClick} />
-              ))}
-            </div>
-          </>
-        ) : currentPage === "watch" && selectedVideo ? (
-          <WatchPage 
-            video={selectedVideo} 
-            allVideos={mediaItems}
-            onVideoClick={handleVideoClick}
-            onBack={() => {
-              setCurrentPage("home");
-              setSelectedVideo(null);
-            }} 
-          />
-        ) : currentPage === "about" ? (
-          <InfoPage title="আমাদের সম্পর্কে" icon={Info}>
-            <p><strong>দেশি কালেকশন</strong> একটি প্রিমিয়াম বিনোদনমূলক গ্যালারি প্ল্যাটফর্ম। ভাইরাল হওয়া সব আলোচিত ভিডিও ও খবর সবার আগে আপনাদের মাঝে পৌঁছে দেয়াই আমাদের লক্ষ্য।</p>
-          </InfoPage>
-        ) : currentPage === "contact" ? (
-          <InfoPage title="যোগাযোগ করুন" icon={Phone}>
-            <p className="text-center">যেকোনো সহযোগিতার জন্য বা ভিডিও যুক্ত করতে টেলিগ্রামে যোগাযোগ করুন।</p>
-            <div className="flex justify-center pt-4">
-              <a href={ADSTERRA_SMARTLINK} target="_blank" rel="noopener noreferrer" className="px-10 py-4 bg-purple-600 text-white font-bold rounded-2xl shadow-xl shadow-purple-500/20 hover:scale-105 transition-all font-bengali">লিংক দেখুন</a>
-            </div>
-          </InfoPage>
-        ) : currentPage === "privacy" ? (
-          <InfoPage title="গোপনীয়তা নীতিমালা" icon={Shield}>
-            <p>আপনার তথ্য আমাদের কাছে নিরাপদ। ব্রাউজিং অভিজ্ঞতা উন্নত করতে কুকিজ ব্যবহৃত হতে পারে।</p>
-          </InfoPage>
-        ) : (
-          <InfoPage title="ডিসক্লেইমার" icon={HelpCircle}>
-            <p>এখানে প্রদর্শিত অধিকাংশ কন্টেন্ট পাবলিক সোর্স থেকে সংগৃহীত। কোনো কন্টেন্ট নিয়ে অভিযোগ থাকলে আমাদের সাথে যোগাযোগ করুন।</p>
-          </InfoPage>
-        )}
+          <Route path="/disclaimer" element={
+            <InfoPage title="ডিসক্লেইমার" icon={HelpCircle}>
+              <p>এখানে প্রদর্শিত অধিকাংশ কন্টেন্ট পাবলিক সোর্স থেকে সংগৃহীত। কোনো কন্টেন্ট নিয়ে অভিযোগ থাকলে আমাদের সাথে যোগাযোগ করুন।</p>
+            </InfoPage>
+          } />
+        </Routes>
       </main>
 
       <Footer onPageChange={(page) => {
         if (page === "home") {
-          setCurrentPage("home");
+          navigate("/");
           setActiveCategory("all");
           setActiveTab("home");
         } else {
-          setCurrentPage(page);
+          navigate(`/${page}`);
           setActiveTab(page);
         }
         window.scrollTo(0, 0);
