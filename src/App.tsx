@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, Video, Sparkles, X, ChevronUp, Share2, Home, Clock, TrendingUp, Star, Phone, Info, Shield, HelpCircle, ChevronRight, Lock, Eye } from "lucide-react";
+import { Search, Video, Sparkles, X, ChevronUp, Share2, Home, Clock, TrendingUp, Star, Phone, Info, Shield, HelpCircle, ChevronRight, Lock, Eye, Menu } from "lucide-react";
 import { BrowserRouter, Routes, Route, Link, useNavigate, useParams, useLocation } from "react-router-dom";
 
 // --- Video Data ---
@@ -672,6 +672,21 @@ const handleCTAClick = () => {
   console.log("[CLICK_TRACK] Footer CTA clicked");
 };
 
+const SocialBarAd = () => {
+  useEffect(() => {
+    const scriptId = "adsterra-social-bar";
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.type = 'text/javascript';
+      script.src = "//liverdopost.com/71/6a/e0/716ae033fcb764b4c735ba703c734914.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+  return null;
+};
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -706,6 +721,19 @@ function AppContent() {
     else if (path === '/disclaimer') setActiveTab('disclaimer');
   }, [location.pathname]);
 
+  // Page Title Sync
+  useEffect(() => {
+    const pageTitles: Record<string, string> = {
+      'home': 'দেশি কালেকশন - প্রিমিয়াম ভিডিও আপডেট',
+      'about': 'আমাদের সম্পর্কে - দেশি কালেকশন',
+      'contact': 'যোগাযোগ করুন - দেশি কালেকশন',
+      'privacy': 'গোপনীয়তা নীতিমালা - দেশি কালেকশন',
+      'disclaimer': 'ডিসক্লেইমার - দেশি কালেকশন',
+      'watch': 'ভিডিও দেখুন - দেশি কালেকশন'
+    };
+    document.title = pageTitles[activeTab] || 'দেশি কালেকশন';
+  }, [activeTab]);
+
   const filteredMedia = useMemo(() => {
     return mediaItems.filter(item => {
       const matchesCategory = activeCategory === "all" || item.category === activeCategory;
@@ -723,8 +751,9 @@ function AppContent() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#050505] text-white selection:bg-purple-500/30 font-sans">
+    <div className="relative min-h-screen bg-[#050505] text-white selection:bg-purple-500/30 font-sans overflow-x-hidden">
       <BubbleBackground />
+      <SocialBarAd />
       
       <header className="sticky top-0 z-[100] w-full bg-[#050505]/95 backdrop-blur-2xl border-b border-white/10 py-5 px-6 shadow-2xl transition-all duration-300">
         <div className="mx-auto max-w-7xl flex items-center justify-between">
@@ -749,8 +778,12 @@ function AppContent() {
             ))}
           </nav>
 
-          <button className="lg:hidden p-2.5 bg-white/5 rounded-xl" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            <X className={`h-5 w-5 transition-transform ${isMobileMenuOpen ? "rotate-0" : "rotate-180"}`} />
+          <button className="lg:hidden p-2.5 bg-white/5 rounded-xl transition-all active:scale-95" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {isMobileMenuOpen ? (
+              <X className="h-5 w-5 text-white" />
+            ) : (
+              <Menu className="h-5 w-5 text-white" />
+            )}
           </button>
         </div>
         <AnimatePresence>
