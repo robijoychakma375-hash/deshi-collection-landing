@@ -55,8 +55,8 @@
   }
 
   .logo-text {
-    @apply font-bengali font-black italic text-white;
-    text-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+    @apply font-bengali font-black text-white;
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
   }
 
   .category-btn {
@@ -72,11 +72,11 @@
   }
 
   .video-badge {
-    @apply absolute top-3 left-3 z-10 font-bengali text-[10px] font-bold px-2.5 py-1 rounded-lg bg-blue-600/80 text-white shadow-lg backdrop-blur-sm transition-colors duration-300 border border-white/10;
+    @apply absolute top-3 left-3 z-10 font-bengali text-[10px] font-bold px-3 py-1.5 rounded-xl bg-blue-600 text-white shadow-lg backdrop-blur-sm transition-all duration-300 border border-white/10;
   }
 
   .nav-link {
-    @apply px-4 py-2 text-sm font-bold text-slate-400 font-bengali hover:text-white transition-colors relative;
+    @apply px-4 py-2 text-sm font-bold text-slate-300 font-bengali hover:text-white transition-all relative;
   }
 
   .nav-link-active {
@@ -94,30 +94,5 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
-  }
-
-  /* News Ticker */
-  .ticker-container {
-    @apply flex items-center bg-[#111118] border border-white/5 rounded-2xl overflow-hidden h-12 shadow-inner mb-6 md:mb-10;
-    contain: paint;
-  }
-
-  .ticker-label {
-    @apply h-full flex items-center px-5 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bengali text-xs md:text-sm font-bold z-10 whitespace-nowrap;
-  }
-
-  .ticker-content {
-    @apply flex-1 overflow-hidden relative h-full flex items-center;
-  }
-
-  .ticker-text {
-    @apply absolute whitespace-nowrap font-bengali text-xs md:text-sm font-semibold text-slate-200;
-    animation: marquee 25s linear infinite;
-    padding-left: 100%;
-  }
-
-  @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
   }
 }
