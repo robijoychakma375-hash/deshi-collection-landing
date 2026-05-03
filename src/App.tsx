@@ -152,6 +152,8 @@ const getUploadTime = (item: MediaItem) => {
   return uploadTimeLabels[hash % uploadTimeLabels.length];
 };
 
+const ADSTERRA_SMARTLINK = "https://liverdopost.com/dc4eew31?key=70c633485e4743886ef16f61d8b5fc32";
+
 // --- Components ---
 
 const BubbleBackground = () => (
@@ -293,6 +295,33 @@ const VideoCard = ({ item, index, priority = false, onVideoClick }: any) => {
   );
 };
 
+const NativeAd = () => {
+  useEffect(() => {
+    // Only run if the script doesn't already exist
+    const scriptId = "adsterra-native-script";
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.async = true;
+      script.dataset.cfasync = "false";
+      script.src = "https://liverdopost.com/e1108b53bedb298b7d77beabae346821/invoke.js";
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  return (
+    <div className="w-full flex justify-center my-16 px-4">
+      <div 
+        id="container-e1108b53bedb298b7d77beabae346821" 
+        className="w-full max-w-4xl min-h-[100px] bg-white/5 rounded-[2.5rem] border border-white/10 flex items-center justify-center relative overflow-hidden shadow-2xl"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 pointer-events-none" />
+        <span className="text-[10px] text-slate-600 font-bold uppercase tracking-[0.4em] pointer-events-none opacity-50">Advertisement</span>
+      </div>
+    </div>
+  );
+};
+
 const SkeletonCard = () => (
   <div className="video-card flex flex-col h-full bg-[#111118] border border-white/5 rounded-2xl overflow-hidden">
     <div className="aspect-video bg-[#1a1a25] animate-pulse flex-shrink-0" />
@@ -342,9 +371,9 @@ const WatchPage = ({ video, allVideos, onBack, onVideoClick }: { video: MediaIte
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
         {/* Main Content Area */}
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-[#111118] rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl">
+          <div className="bg-[#111118] rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl relative">
             <div className="relative aspect-video">
-              <img src={video.image} alt={video.caption} className="w-full h-full object-cover opacity-60 blur-[2px]" />
+              <img src={video.image} alt={video.caption} className="w-full h-full object-cover opacity-60 blur-[3px]" />
               <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-black/50">
                 <div className="p-4 bg-purple-600/20 rounded-2xl border border-purple-500/30 mb-4">
                   <Video className="h-10 w-10 text-purple-400 animate-pulse" />
@@ -366,7 +395,7 @@ const WatchPage = ({ video, allVideos, onBack, onVideoClick }: { video: MediaIte
                   ) : (
                     <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="space-y-4">
                       <a 
-                        href={video.link}
+                        href={ADSTERRA_SMARTLINK}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center justify-center gap-4 w-full py-5 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white font-black rounded-2xl shadow-[0_0_30px_rgba(147,51,234,0.3)] hover:scale-[1.02] active:scale-95 transition-all text-xl font-bengali uppercase tracking-tight"
@@ -469,13 +498,13 @@ const Footer = ({ onPageChange }: { onPageChange: (page: any) => void }) => (
             <p className="font-bengali text-slate-300 text-sm md:text-base">সব সেরা ভাইরাল ভিডিও সবার আগে পেতে আজই জয়েন করুন</p>
           </div>
           <a 
-            href="https://t.me/desi_collection" 
+            href={ADSTERRA_SMARTLINK} 
             target="_blank" 
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-8 py-3.5 bg-blue-600 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/30 hover:scale-[1.05] active:scale-95 transition-all text-sm"
           >
             <Share2 className="h-4 w-4" />
-            Join Telegram
+            Join Now
           </a>
         </div>
       </div>
@@ -663,6 +692,8 @@ export default function App() {
               </AnimatePresence>
             </div>
 
+            <NativeAd />
+
             <SectionHeader title="পপুলার ভিডিও" icon={TrendingUp} />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mb-12">
               {popularVideos.map((item, index) => (
@@ -688,7 +719,7 @@ export default function App() {
           <InfoPage title="যোগাযোগ করুন" icon={Phone}>
             <p className="text-center">যেকোনো সহযোগিতার জন্য বা ভিডিও যুক্ত করতে টেলিগ্রামে যোগাযোগ করুন।</p>
             <div className="flex justify-center pt-4">
-              <a href="https://t.me/desi_collection" target="_blank" rel="noopener noreferrer" className="px-10 py-4 bg-purple-600 text-white font-bold rounded-2xl shadow-xl shadow-purple-500/20 hover:scale-105 transition-all font-bengali">টেলিগ্রামে নক দিন</a>
+              <a href={ADSTERRA_SMARTLINK} target="_blank" rel="noopener noreferrer" className="px-10 py-4 bg-purple-600 text-white font-bold rounded-2xl shadow-xl shadow-purple-500/20 hover:scale-105 transition-all font-bengali">লিংক দেখুন</a>
             </div>
           </InfoPage>
         ) : currentPage === "privacy" ? (
