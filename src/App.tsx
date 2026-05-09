@@ -187,7 +187,7 @@ const Logo = ({ size = "md", showSubtitle = true }: { size?: "sm" | "md" | "lg";
   return (
     <div className="flex items-center gap-3.5 select-none group">
       {/* Icon Part */}
-      <div className={`relative ${isSm ? 'h-8 w-8' : isLg ? 'h-16 w-16' : 'h-11 w-11 md:h-13 md:w-13'} flex-shrink-0 transition-transform duration-500 group-hover:scale-105`}>
+      <div className={`relative ${isSm ? 'h-8 w-8' : isLg ? 'h-16 w-16' : 'h-10 w-10 md:h-13 md:w-13'} flex-shrink-0 transition-transform duration-500 group-hover:scale-105`}>
         {/* Glow Layer */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
         
@@ -216,7 +216,7 @@ const Logo = ({ size = "md", showSubtitle = true }: { size?: "sm" | "md" | "lg";
 
       {/* Text Part */}
       <div className="flex flex-col">
-        <h1 className={`font-bengali font-black tracking-tight leading-tight text-white ${isSm ? 'text-lg' : isLg ? 'text-3xl md:text-5xl' : 'text-xl md:text-3xl'}`}>
+        <h1 className={`font-bengali font-black tracking-tight leading-tight text-white ${isSm ? 'text-lg' : isLg ? 'text-3xl md:text-5xl' : 'text-lg md:text-3xl'}`}>
           দেশি কালেকশন
         </h1>
         {showSubtitle && (
@@ -425,12 +425,12 @@ const WatchPage = () => {
       className="max-w-6xl mx-auto py-8 px-4"
     >
       {/* Breadcrumb / Back Button Improvement */}
-      <nav className="flex items-center gap-3 mb-8 overflow-hidden">
-        <Link to="/" className="flex items-center gap-1.5 text-slate-400 hover:text-white font-bengali font-bold transition-all group whitespace-nowrap">
+      <nav className="flex items-center gap-2 mb-8 overflow-x-auto no-scrollbar pb-2">
+        <Link to="/" className="flex items-center gap-1 text-slate-400 hover:text-white font-bengali font-bold transition-all group whitespace-nowrap text-sm">
           <Home className="h-4 w-4" /> হোম
         </Link>
         <ChevronRight className="h-4 w-4 text-slate-600 flex-shrink-0" />
-        <span className="text-slate-500 font-bengali font-medium line-clamp-1 max-w-[200px] md:max-w-none">
+        <span className="text-slate-500 font-bengali font-medium text-xs md:text-sm whitespace-nowrap">
           {video.caption}
         </span>
       </nav>
@@ -438,8 +438,8 @@ const WatchPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
         {/* Main Content Area */}
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-[#111118] rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl relative group">
-            <div className="relative aspect-video">
+          <div className="bg-[#111118] rounded-3xl md:rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl relative group">
+            <div className="relative aspect-video flex-shrink-0 overflow-hidden bg-white/5">
               <img 
                 src={video.image} 
                 alt={video.caption} 
@@ -452,9 +452,9 @@ const WatchPage = () => {
                 <div className="p-5 bg-purple-600/20 rounded-3xl border border-purple-500/30 mb-4 shadow-[0_0_20px_rgba(168,85,247,0.2)]">
                   <Video className="h-12 w-12 text-purple-400 animate-pulse" />
                 </div>
-                <h2 className="font-bengali text-xl md:text-3xl font-black text-white mb-8 leading-tight max-w-2xl px-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">{video.caption}</h2>
+                <h2 className="font-bengali text-lg md:text-3xl font-black text-white mb-6 md:mb-8 leading-tight max-w-2xl px-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">{video.caption}</h2>
                 
-                <div className="bg-black/40 backdrop-blur-3xl rounded-[2rem] p-8 border border-white/10 w-full max-w-md shadow-2xl">
+                <div className="bg-black/40 backdrop-blur-3xl rounded-3xl md:rounded-[2rem] p-6 md:p-8 border border-white/10 w-full max-w-sm md:max-w-md shadow-2xl">
                   {!canProceed ? (
                     <div className="space-y-4">
                       <div className="relative h-24 w-24 mx-auto">
@@ -462,7 +462,7 @@ const WatchPage = () => {
                           <circle cx="48" cy="48" r="44" fill="none" stroke="currentColor" strokeWidth="6" className="text-white/5" />
                           <circle cx="48" cy="48" r="44" fill="none" stroke="currentColor" strokeWidth="6" className="text-purple-500 transition-all duration-1000 ease-linear" strokeDasharray="276" strokeDashoffset={276 - (276 * timer) / 10} strokeLinecap="round" />
                         </svg>
-                        <span className="absolute inset-0 flex items-center justify-center font-black text-3xl text-white">{timer}</span>
+                        <span className="absolute inset-0 flex items-center justify-center font-black text-2xl md:text-3xl text-white">{timer}</span>
                       </div>
                       <div className="space-y-1">
                         <p className="font-bengali text-slate-300 text-sm font-bold flex items-center justify-center gap-2">
@@ -473,16 +473,16 @@ const WatchPage = () => {
                     </div>
                   ) : (
                     <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="space-y-4">
-                      <a 
-                        href={ADSTERRA_SMARTLINK}
-                        onClick={handleLinkClick}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-4 w-full py-5 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(147,51,234,0.4)] border border-white/10 hover:scale-[1.03] active:scale-95 transition-all text-xl md:text-2xl font-bengali uppercase tracking-tight group/btn"
-                      >
-                        লিংক প্রস্তুত ✅
-                        <Share2 className="h-6 w-6 md:h-7 md:w-7 group-hover/btn:translate-x-1 transition-transform" />
-                      </a>
+                        <a 
+                          href={ADSTERRA_SMARTLINK}
+                          onClick={handleLinkClick}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-3 w-full py-4 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white font-black rounded-2xl shadow-[0_0_40px_rgba(147,51,234,0.4)] border border-white/10 hover:scale-[1.03] active:scale-95 transition-all text-lg md:text-2xl font-bengali uppercase tracking-tight group/btn"
+                        >
+                          লিংক প্রস্তুত ✅
+                          <Share2 className="h-5 w-5 md:h-7 md:w-7 group-hover/btn:translate-x-1 transition-transform" />
+                        </a>
                       <div className="flex flex-col items-center gap-1">
                         <div className="flex items-center gap-1.5 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] opacity-90">
                            Safe & Verified Source
@@ -497,7 +497,7 @@ const WatchPage = () => {
           </div>
 
           {/* Trust Messaging */}
-          <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] p-8 border border-white/5 space-y-6">
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl md:rounded-[2rem] p-6 md:p-8 border border-white/5 space-y-6">
             <div className="flex items-center gap-4 border-b border-white/10 pb-6">
               <div className="h-12 w-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20">
                 <Shield className="h-6 w-6 text-emerald-400" />
@@ -612,8 +612,8 @@ const InfoPage = ({ title, icon: Icon, children }: { title: string; icon: any; c
 );
 
 const Footer = ({ onPageChange }: { onPageChange: (page: any) => void }) => (
-  <footer className="bg-[#050505] border-t border-white/5 pt-12 pb-8 px-4 shadow-2xl overflow-hidden relative">
-    <div className="max-w-7xl mx-auto space-y-12 relative z-10">
+          <footer className="bg-[#050505] border-t border-white/5 pt-12 pb-12 px-4 shadow-2xl relative">
+    <div className="max-w-7xl mx-auto space-y-12 relative z-10 mb-16 lg:mb-0">
       {/* Telegram CTA */}
       <div className="w-full max-w-4xl mx-auto bg-gradient-to-r from-purple-900/40 to-blue-900/40 backdrop-blur-xl border border-white/10 rounded-[2rem] p-6 md:p-10 text-center relative group overflow-hidden">
         <div className="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-3xl -z-10" />
@@ -751,7 +751,7 @@ function AppContent() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#050505] text-white selection:bg-purple-500/30 font-sans overflow-x-hidden">
+    <div className="w-full min-h-[100dvh] bg-[#050505] text-white selection:bg-purple-500/30 font-sans relative flex flex-col overflow-x-hidden">
       <BubbleBackground />
       <SocialBarAd />
       
@@ -812,7 +812,7 @@ function AppContent() {
         </AnimatePresence>
       </header>
 
-      <main className="mx-auto max-w-7xl px-3 md:px-6 pb-20 mt-8">
+      <main className="flex-grow w-full mx-auto max-w-7xl px-3 md:px-6 pb-20 mt-8">
         <Routes>
           <Route path="/" element={
             <>
@@ -827,7 +827,7 @@ function AppContent() {
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-purple-500/10 border border-purple-500/20 rounded-full text-purple-400 text-[10px] font-bold tracking-widest uppercase">
                   <Sparkles className="h-3 w-3" /> Premium Entertainment
                 </div>
-                <p className="font-bengali text-slate-200 max-w-2xl mx-auto text-base md:text-2xl leading-relaxed font-medium">ভাইরাল হওয়া সব আলোচিত ভিডিও এবং বিশেষ কালেকশনের সেরা আপডেটগুলো সবার আগে পান এখানে।</p>
+                <p className="font-bengali text-slate-200 max-w-2xl mx-auto text-sm md:text-2xl leading-relaxed font-medium px-4">ভাইরাল হওয়া সব আলোচিত ভিডিও এবং বিশেষ কালেকশনের সেরা আপডেটগুলো সবার আগে পান এখানে।</p>
               </section>
 
               <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-12">
