@@ -332,21 +332,21 @@ const VideoCard = ({ item, index, priority = false }: VideoCardProps) => {
 const NativeAd = () => {
   useEffect(() => {
     // Only run if the script doesn't already exist
-    const scriptId = "adsterra-native-script";
+    const scriptId = "adsterra-native-script-current";
     if (!document.getElementById(scriptId)) {
       const script = document.createElement('script');
       script.id = scriptId;
       script.async = true;
-      script.dataset.cfasync = "false";
-      script.src = "https://liverdopost.com/e1108b53bedb298b7d77beabae346821/invoke.js";
-      document.head.appendChild(script);
+      script.setAttribute("data-cfasync", "false");
+      script.src = "https://liverdopost.com/e17fb030f8c9a301b2c73825ace55c8c/invoke.js";
+      document.body.appendChild(script);
     }
   }, []);
 
   return (
     <div className="w-full flex justify-center my-16 px-4">
       <div 
-        id="container-e1108b53bedb298b7d77beabae346821" 
+        id="container-e17fb030f8c9a301b2c73825ace55c8c" 
         className="w-full max-w-4xl min-h-[100px] bg-[#111111] rounded-2xl border border-[rgba(212,175,55,0.12)] flex items-center justify-center relative overflow-hidden shadow-2xl"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.03)_0%,transparent_70%)] pointer-events-none" />
@@ -637,20 +637,6 @@ const handleCTAClick = () => {
   console.log("[CLICK_TRACK] Footer CTA clicked");
 };
 
-const SocialBarAd = () => {
-  useEffect(() => {
-    const scriptId = "adsterra-social-bar";
-    if (!document.getElementById(scriptId)) {
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.type = 'text/javascript';
-      script.src = "//liverdopost.com/71/6a/e0/716ae033fcb764b4c735ba703c734914.js";
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }, []);
-  return null;
-};
 
 export default function App() {
   return (
@@ -782,7 +768,6 @@ function AppContent() {
   return (
     <div className="w-full min-h-[100dvh] bg-[#080808] text-white selection:bg-[#D4AF37]/25 font-sans relative flex flex-col overflow-x-hidden">
       <BubbleBackground />
-      <SocialBarAd />
       
       <header className="sticky top-0 z-[100] w-full bg-[#080808]/90 backdrop-blur-2xl border-b border-[rgba(212,175,55,0.08)] py-4 px-6 shadow-2xl transition-all duration-300">
         <div className="mx-auto max-w-7xl flex items-center justify-between">
