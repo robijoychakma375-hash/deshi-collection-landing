@@ -26,12 +26,10 @@
   }
   html {
     scroll-behavior: smooth;
-    overflow-x: hidden;
   }
   body {
     @apply antialiased font-sans;
     text-rendering: optimizeLegibility;
-    overflow-x: hidden;
     width: 100%;
     position: relative;
     -webkit-tap-highlight-color: transparent;

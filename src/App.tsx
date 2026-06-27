@@ -174,11 +174,11 @@ const getUploadTime = (item: MediaItem) => {
 // --- Components ---
 
 const BubbleBackground = () => (
-  <>
+  <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
     <div className="luxury-glow-bg" />
     <div className="glow-blob-gold top-[-10%] left-[-10%]" />
     <div className="glow-blob-gold bottom-[-10%] right-[-10%]" />
-  </>
+  </div>
 );
 
 const Logo = ({ size = "md", showSubtitle = true }: { size?: "sm" | "md" | "lg"; showSubtitle?: boolean }) => {
